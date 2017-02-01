@@ -1,14 +1,12 @@
-﻿using FriendStorage.UI.DataProvider;
-
-namespace FriendStorage.UI.ViewModel
+﻿namespace FriendStorage.UI.ViewModel
 {
 	public class MainViewModel : ViewModelBase
 	{
-		public NavigationViewModel NavigationViewModel { get; }
+		public INavigationViewModel NavigationViewModel { get; }
 
-		public MainViewModel(INavigationDataProvider friendsDataService)
+		public MainViewModel(INavigationViewModel navigationViewModel)
 		{
-			NavigationViewModel = new NavigationViewModel(friendsDataService);
+			NavigationViewModel = navigationViewModel;
 		}
 
 		public void Load()

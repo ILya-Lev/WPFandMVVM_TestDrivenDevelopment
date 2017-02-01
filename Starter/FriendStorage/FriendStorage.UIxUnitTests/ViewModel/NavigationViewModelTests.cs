@@ -9,10 +9,10 @@ namespace FriendStorage.UI.ViewModel.Tests
 {
 	public class NavigationViewModelTests
 	{
-		private static readonly Friend[] _friends = new[]
+		private static readonly LookupItem[] _friends = new[]
 		{
-			new Friend { Id = 1, FirstName = "alan", LastName = "jons"},
-			new Friend { Id = 2, FirstName = "krage", LastName = "morrison"}
+			new LookupItem { Id = 1, DisplayMember = "alan jons"},
+			new LookupItem { Id = 2, DisplayMember = "krage morrison"}
 		};
 
 		[Fact]

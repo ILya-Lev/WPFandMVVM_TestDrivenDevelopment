@@ -15,7 +15,8 @@ namespace FriendStorage.UI
 
 			Func<IDataService> friendsDataServiceCreator = () => new FileDataService();
 			var dataProvider = new NavigationDataProvider(friendsDataServiceCreator);
-			var viewModel = new MainViewModel(dataProvider);
+			var navigationViewModel = new NavigationViewModel(dataProvider);
+			var viewModel = new MainViewModel(navigationViewModel);
 
 			MainWindow = new MainWindow(viewModel);
 			MainWindow.Show();

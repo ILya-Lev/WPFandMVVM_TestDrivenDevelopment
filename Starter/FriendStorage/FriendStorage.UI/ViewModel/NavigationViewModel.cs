@@ -5,19 +5,24 @@ using System.Linq;
 
 namespace FriendStorage.UI.ViewModel
 {
-	public class NavigationViewModel : ViewModelBase
+	public interface INavigationViewModel
+	{
+		void Load();
+	}
+
+	public class NavigationViewModel : ViewModelBase, INavigationViewModel
 	{
 		private readonly INavigationDataProvider _friendsDataService;
 
 		/// <summary>
 		/// if one assign new collection to the property after it's binded - no data will be displayed
 		/// </summary>
-		public ObservableCollection<Friend> Friends { get; }
+		public ObservableCollection<LookupItem> Friends { get; }
 
 		public NavigationViewModel(INavigationDataProvider friendsDataService)
 		{
 			_friendsDataService = friendsDataService;
-			Friends = new ObservableCollection<Friend>();
+			Friends = new ObservableCollection<LookupItem>();
 		}
 
 		public void Load()
