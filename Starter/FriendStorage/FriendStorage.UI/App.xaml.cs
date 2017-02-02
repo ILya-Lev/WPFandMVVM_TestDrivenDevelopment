@@ -1,8 +1,6 @@
-﻿using FriendStorage.DataAccess;
-using FriendStorage.UI.DataProvider;
+﻿using Autofac;
+using FriendStorage.UI.Startup;
 using FriendStorage.UI.View;
-using FriendStorage.UI.ViewModel;
-using System;
 using System.Windows;
 
 namespace FriendStorage.UI
@@ -13,12 +11,7 @@ namespace FriendStorage.UI
 		{
 			base.OnStartup(e);
 
-			Func<IDataService> friendsDataServiceCreator = () => new FileDataService();
-			var dataProvider = new NavigationDataProvider(friendsDataServiceCreator);
-			var navigationViewModel = new NavigationViewModel(dataProvider);
-			var viewModel = new MainViewModel(navigationViewModel);
-
-			MainWindow = new MainWindow(viewModel);
+			MainWindow = Bootstrapper.Container.Resolve<MainWindow>();
 			MainWindow.Show();
 		}
 	}
