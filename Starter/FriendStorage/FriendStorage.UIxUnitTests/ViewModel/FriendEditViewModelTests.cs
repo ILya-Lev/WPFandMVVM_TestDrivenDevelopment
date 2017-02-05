@@ -39,5 +39,27 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 															nameof(_viewModel.Friend));
 			fiered.Should().BeTrue("view model's property should have been changed on load");
 		}
+
+		[Fact]
+		public void SaveCommand_FriendIsJustLoaded_ShouldBeDisabled()
+		{
+			_viewModel.Load(_friendId);
+
+			_viewModel.SaveCommand.CanExecute(null).Should().BeFalse("there is no change yet");
+		}
+
+		[Fact]
+		public void SaveCommand_BeforeAnyFriendIsLoaded_ShouldBeDisabled()
+		{
+			_viewModel.SaveCommand.CanExecute(null).Should().BeFalse("no friends has been loaded yet");
+		}
+
+		[Fact]
+		public void SaveCommand_ChangeFriend_ShouldBeEnabled()
+		{
+			_viewModel.Load(_friendId);
+			_viewModel.Friend.FirstName = "Jessica";
+			_viewModel.SaveCommand.CanExecute(null).Should().BeTrue("the record has been edited");
+		}
 	}
 }

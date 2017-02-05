@@ -1,8 +1,10 @@
-﻿using FriendStorage.UI.Events;
+﻿using FriendStorage.UI.Command;
+using FriendStorage.UI.Events;
 using Prism.Events;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 
 namespace FriendStorage.UI.ViewModel
 {
@@ -19,8 +21,9 @@ namespace FriendStorage.UI.ViewModel
 			get { return _selectedFriendEditViewModel; }
 			set { _selectedFriendEditViewModel = value; OnPropertyChanged(); }
 		}
+		public ICommand CloseFriendTabCommand { get; }
 
-		public MainViewModel(INavigationViewModel navigationViewModel,
+		public MainViewModel (INavigationViewModel navigationViewModel,
 							Func<IFriendEditViewModel> friendEditVmCreator,
 							IEventAggregator eventAggregator)
 		{
@@ -30,9 +33,18 @@ namespace FriendStorage.UI.ViewModel
 			FriendEditViewModels = new ObservableCollection<IFriendEditViewModel>();
 
 			eventAggregator.GetEvent<OpenFriendEditViewEvent>().Subscribe(OnOpenFriendEditView);
+			CloseFriendTabCommand = new DelegateCommand(OnCloseFriendTabExecute);
 		}
 
-		private void OnOpenFriendEditView(int friendId)
+		private void OnCloseFriendTabExecute (object obj)
+		{
+			var friendEditVm = (IFriendEditViewModel) obj;
+
+			// SelectedFriendEditViewModel is changed by the View control
+			FriendEditViewModels.Remove(friendEditVm);
+		}
+
+		private void OnOpenFriendEditView (int friendId)
 		{
 			var friendEditVm = FriendEditViewModels.SingleOrDefault(vm => vm.Friend.Id == friendId);
 
@@ -46,7 +58,7 @@ namespace FriendStorage.UI.ViewModel
 			SelectedFriendEditViewModel = friendEditVm;
 		}
 
-		public void Load()
+		public void Load ()
 		{
 			NavigationViewModel.Load();
 		}

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using FriendStorage.Model;
 using FriendStorage.UI.Events;
+using FriendStorage.UI.Wrappers;
 using FriendStorage.UIxUnitTests.Extensions;
 using Moq;
 using Prism.Events;
@@ -41,7 +42,7 @@ namespace FriendStorage.UI.ViewModel.Tests
 					var friendEditVm = new Mock<IFriendEditViewModel>();
 					friendEditVm.Setup(vm => vm.Load(It.IsAny<int>()))
 					.Callback<int>(id => friendEditVm.Setup(vm => vm.Friend)
-													 .Returns(new Friend { Id = id }));
+													 .Returns(new FriendWrapper(new Friend { Id = id })));
 					_friendEditVmMocks.Add(friendEditVm);
 					return friendEditVm.Object;
 				},
@@ -100,6 +101,18 @@ namespace FriendStorage.UI.ViewModel.Tests
 										nameof(_mainViewModel.SelectedFriendEditViewModel));
 
 			fiered.Should().BeTrue("we've already selected a friend");
+		}
+
+		[Fact]
+		public void CloseFriendTabCommand_ShouldRemoveFriendEditViewModel()
+		{
+			_openFriendEvent.Publish(7);
+			var friendEditVm = _friendEditVmMocks.Single(vm => vm.Object.Friend.Id == 7);
+
+			_mainViewModel.CloseFriendTabCommand.Execute(friendEditVm.Object);
+
+			_mainViewModel.FriendEditViewModels.Should()
+				.NotContain(vm => vm.Friend.Id == 7, "we executed close friend tab command already");
 		}
 	}
 }
