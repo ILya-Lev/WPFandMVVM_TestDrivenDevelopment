@@ -154,5 +154,33 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 				"friend edit view model should not call get friend by id of the provider when " +
 				"its load method is invoked with null value");
 		}
+		[Fact]
+		public void Load_ExistingFriend_ShouldEnableDeleteButton()
+		{
+			_viewModel.Load(7);
+
+			var isEnabled = _viewModel.DeleteCommand.CanExecute(null);
+
+			isEnabled.Should().BeTrue();
+		}
+		[Fact]
+		public void Load_NewFriend_ShouldDisableDeleteButton()
+		{
+			_viewModel.Load(null);
+
+			var isEnabled = _viewModel.DeleteCommand.CanExecute(null);
+
+			isEnabled.Should().BeFalse();
+		}
+		[Fact]
+		public void Save_NewFriend_ShouldEnableDeleteButton()
+		{
+			_viewModel.Load(null);
+			_viewModel.SaveCommand.Execute(null);
+
+			var isEnabled = _viewModel.DeleteCommand.CanExecute(null);
+
+			isEnabled.Should().BeFalse();
+		}
 	}
 }

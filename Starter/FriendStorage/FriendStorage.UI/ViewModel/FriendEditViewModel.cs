@@ -28,6 +28,7 @@ namespace FriendStorage.UI.ViewModel
 		}
 
 		public ICommand SaveCommand { get; }
+		public ICommand DeleteCommand { get; }
 
 		public FriendEditViewModel(IFriendDataProvider friendDataProvider,
 									IEventAggregator eventAggregator)
@@ -35,6 +36,7 @@ namespace FriendStorage.UI.ViewModel
 			_friendDataProvider = friendDataProvider;
 			_eventAggregator = eventAggregator;
 			SaveCommand = new DelegateCommand(OnSaveExecute, OnCanSaveExecute);
+			DeleteCommand = new DelegateCommand(OnDeleteExecute, OnCanDeleteExecute);
 		}
 
 		public void Load(int? friendId)
@@ -62,6 +64,18 @@ namespace FriendStorage.UI.ViewModel
 			_friendDataProvider.SaveFriend(Friend.Model);
 			Friend.AcceptChanges();
 			_eventAggregator.GetEvent<FriendSavedEvent>().Publish(Friend.Model);
+
+			(DeleteCommand as DelegateCommand).RaiseCanExecuteChanged();
+		}
+
+		private bool OnCanDeleteExecute(object arg)
+		{
+			return Friend != null && Friend.Id != 0;
+		}
+
+		private void OnDeleteExecute(object obj)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
