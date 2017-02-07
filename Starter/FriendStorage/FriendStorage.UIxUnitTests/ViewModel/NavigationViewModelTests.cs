@@ -2,13 +2,14 @@
 using FriendStorage.Model;
 using FriendStorage.UI.DataProvider;
 using FriendStorage.UI.Events;
+using FriendStorage.UI.ViewModel;
 using Moq;
 using Prism.Events;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace FriendStorage.UI.ViewModel.Tests
+namespace FriendStorage.UIxUnitTests.ViewModel
 {
 	public class NavigationViewModelTests
 	{

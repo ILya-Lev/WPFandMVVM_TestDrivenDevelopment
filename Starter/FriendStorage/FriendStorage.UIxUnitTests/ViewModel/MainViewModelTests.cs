@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using FriendStorage.Model;
 using FriendStorage.UI.Events;
+using FriendStorage.UI.ViewModel;
 using FriendStorage.UI.Wrappers;
 using FriendStorage.UIxUnitTests.Extensions;
 using Moq;
@@ -10,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace FriendStorage.UI.ViewModel.Tests
+namespace FriendStorage.UIxUnitTests.ViewModel
 {
 	public class MainViewModelTests
 	{

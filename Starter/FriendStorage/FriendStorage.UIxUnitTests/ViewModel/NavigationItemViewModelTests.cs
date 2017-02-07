@@ -1,10 +1,12 @@
 ﻿using FluentAssertions;
 using FriendStorage.UI.Events;
+using FriendStorage.UI.ViewModel;
 using FriendStorage.UIxUnitTests.Extensions;
 using Moq;
 using Prism.Events;
 using Xunit;
-namespace FriendStorage.UI.ViewModel.Tests
+
+namespace FriendStorage.UIxUnitTests.ViewModel
 {
 	public class NavigationItemViewModelTests
 	{
