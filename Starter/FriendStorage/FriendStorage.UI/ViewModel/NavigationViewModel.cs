@@ -1,4 +1,6 @@
-﻿using FriendStorage.UI.DataProvider;
+﻿using FriendStorage.Model;
+using FriendStorage.UI.DataProvider;
+using FriendStorage.UI.Events;
 using Prism.Events;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -26,8 +28,33 @@ namespace FriendStorage.UI.ViewModel
 			_friendsDataService = friendsDataService;
 			_eventAggregator = eventAggregator;
 
+			_eventAggregator.GetEvent<FriendSavedEvent>().Subscribe(OnFriendSaved);
 			Friends = new ObservableCollection<NavigationItemViewModel>();
 		}
+
+		private void OnFriendSaved(Friend friend)
+		{
+			var theItem = Friends.SingleOrDefault(item => item.Id == friend.Id);
+			if (theItem == null)
+			{
+				var lookupItem = _friendsDataService.GetAllFriends()
+								.Single(item => item.Id == friend.Id);
+				theItem = new NavigationItemViewModel(lookupItem.Id, lookupItem.DisplayMember,
+														_eventAggregator);
+				Friends.Add(theItem);
+			}
+			theItem.DisplayMember = $"{friend.FirstName} {friend.LastName}";
+		}
+		//private void OnFriendSaved(Friend friend)
+		//{
+		//	var theFriendIdx = Friends.Select((item, idx) => new { item, idx })
+		//								.Where(indexedItem => indexedItem.item.Id == friend.Id)
+		//								.Select(indexedItem => indexedItem.idx).Single();
+		//	var lookupItem = _friendsDataService.GetAllFriends().Single(item => item.Id == friend.Id);
+		//	Friends.RemoveAt(theFriendIdx);
+		//	Friends.Insert(theFriendIdx, new NavigationItemViewModel(lookupItem.Id,
+		//										lookupItem.DisplayMember, _eventAggregator));
+		//}
 
 		public void Load()
 		{

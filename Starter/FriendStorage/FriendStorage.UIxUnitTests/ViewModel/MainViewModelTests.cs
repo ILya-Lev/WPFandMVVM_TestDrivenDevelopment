@@ -41,8 +41,8 @@ namespace FriendStorage.UI.ViewModel.Tests
 				{
 					var friendEditVm = new Mock<IFriendEditViewModel>();
 					friendEditVm.Setup(vm => vm.Load(It.IsAny<int>()))
-					.Callback<int>(id => friendEditVm.Setup(vm => vm.Friend)
-													 .Returns(new FriendWrapper(new Friend { Id = id })));
+					.Callback<int?>(id => friendEditVm.Setup(vm => vm.Friend)
+										.Returns(new FriendWrapper(new Friend { Id = id.Value })));
 					_friendEditVmMocks.Add(friendEditVm);
 					return friendEditVm.Object;
 				},
@@ -97,7 +97,7 @@ namespace FriendStorage.UI.ViewModel.Tests
 				_mainViewModel.SelectedFriendEditViewModel = friendEditVm.Object;
 			};
 
-			var fiered = _mainViewModel.IsPropertyChangedFiered(action,
+			var fiered = _mainViewModel.IsPropertyChangedFired(action,
 										nameof(_mainViewModel.SelectedFriendEditViewModel));
 
 			fiered.Should().BeTrue("we've already selected a friend");
@@ -113,6 +113,18 @@ namespace FriendStorage.UI.ViewModel.Tests
 
 			_mainViewModel.FriendEditViewModels.Should()
 				.NotContain(vm => vm.Friend.Id == 7, "we executed close friend tab command already");
+		}
+		[Fact]
+		public void AddFriend_ShouldOpenCreatedFriend()
+		{
+			_mainViewModel.AddFriendCommand.Execute(null);
+
+			_mainViewModel.FriendEditViewModels.Count.Should().Be(1, "created only one friend");
+
+			var friendEditVm = _mainViewModel.FriendEditViewModels.First();
+			friendEditVm.Should().Be(_mainViewModel.SelectedFriendEditViewModel,
+										"created friend should be selected");
+			_friendEditVmMocks.First().Verify(vm => vm.Load(null), Times.Once);
 		}
 	}
 }

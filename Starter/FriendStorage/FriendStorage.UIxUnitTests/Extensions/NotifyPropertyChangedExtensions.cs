@@ -5,20 +5,20 @@ namespace FriendStorage.UIxUnitTests.Extensions
 {
 	public static class NotifyPropertyChangedExtensions
 	{
-		public static bool IsPropertyChangedFiered(this INotifyPropertyChanged sender,
+		public static bool IsPropertyChangedFired(this INotifyPropertyChanged sender,
 													Action action,
 													string propertyName)
 		{
-			var fiered = false;
+			var fired = false;
 			sender.PropertyChanged += (s, args) =>
 			{
 				if (args.PropertyName == propertyName)
-					fiered = true;
+					fired = true;
 			};
 
 			action();
 
-			return fiered;
+			return fired;
 		}
 	}
 }

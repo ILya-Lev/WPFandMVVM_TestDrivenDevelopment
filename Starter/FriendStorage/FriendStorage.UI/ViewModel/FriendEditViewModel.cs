@@ -1,7 +1,10 @@
 ﻿using FriendStorage.Model;
 using FriendStorage.UI.Command;
 using FriendStorage.UI.DataProvider;
+using FriendStorage.UI.Events;
 using FriendStorage.UI.Wrappers;
+using Prism.Events;
+using System;
 using System.Windows.Input;
 
 namespace FriendStorage.UI.ViewModel
@@ -9,12 +12,13 @@ namespace FriendStorage.UI.ViewModel
 	public interface IFriendEditViewModel
 	{
 		FriendWrapper Friend { get; }
-		void Load(int friendId);
+		void Load(int? friendId);
 	}
 
 	public class FriendEditViewModel : ViewModelBase, IFriendEditViewModel
 	{
 		private readonly IFriendDataProvider _friendDataProvider;
+		private readonly IEventAggregator _eventAggregator;
 		private FriendWrapper _friend;
 
 		public FriendWrapper Friend
@@ -25,10 +29,27 @@ namespace FriendStorage.UI.ViewModel
 
 		public ICommand SaveCommand { get; }
 
-		public FriendEditViewModel(IFriendDataProvider friendDataProvider)
+		public FriendEditViewModel(IFriendDataProvider friendDataProvider,
+									IEventAggregator eventAggregator)
 		{
 			_friendDataProvider = friendDataProvider;
+			_eventAggregator = eventAggregator;
 			SaveCommand = new DelegateCommand(OnSaveExecute, OnCanSaveExecute);
+		}
+
+		public void Load(int? friendId)
+		{
+			var friend = friendId.HasValue
+						? _friendDataProvider.GetFriendById(friendId.Value)
+						: new Friend();
+			Friend = new FriendWrapper(friend);
+
+			Action raiseCanExecuteChanged =
+				() => (SaveCommand as DelegateCommand).RaiseCanExecuteChanged();
+
+			Friend.PropertyChanged += (sender, args) => raiseCanExecuteChanged();
+
+			raiseCanExecuteChanged();
 		}
 
 		private bool OnCanSaveExecute(object arg)
@@ -38,14 +59,9 @@ namespace FriendStorage.UI.ViewModel
 
 		private void OnSaveExecute(object obj)
 		{
-			var friend = (Friend) obj;
 			_friendDataProvider.SaveFriend(Friend.Model);
-		}
-
-		public void Load(int friendId)
-		{
-			var friend = _friendDataProvider.GetFriendById(friendId);
-			Friend = new FriendWrapper(friend);
+			Friend.AcceptChanges();
+			_eventAggregator.GetEvent<FriendSavedEvent>().Publish(Friend.Model);
 		}
 	}
 }

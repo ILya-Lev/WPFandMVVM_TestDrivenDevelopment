@@ -24,7 +24,7 @@ namespace FriendStorage.UI.Wrappers
 
 		public void AcceptChanges()
 		{
-			IsChanged = true;
+			IsChanged = false;
 		}
 
 		public int Id => _friend.Id;
@@ -56,7 +56,7 @@ namespace FriendStorage.UI.Wrappers
 		protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			base.OnPropertyChanged(propertyName);
-			if(propertyName != nameof(IsChanged))
+			if (propertyName != nameof(IsChanged))
 				IsChanged = true;
 		}
 	}

@@ -22,8 +22,9 @@ namespace FriendStorage.UI.ViewModel
 			set { _selectedFriendEditViewModel = value; OnPropertyChanged(); }
 		}
 		public ICommand CloseFriendTabCommand { get; }
+		public ICommand AddFriendCommand { get; }
 
-		public MainViewModel (INavigationViewModel navigationViewModel,
+		public MainViewModel(INavigationViewModel navigationViewModel,
 							Func<IFriendEditViewModel> friendEditVmCreator,
 							IEventAggregator eventAggregator)
 		{
@@ -34,9 +35,15 @@ namespace FriendStorage.UI.ViewModel
 
 			eventAggregator.GetEvent<OpenFriendEditViewEvent>().Subscribe(OnOpenFriendEditView);
 			CloseFriendTabCommand = new DelegateCommand(OnCloseFriendTabExecute);
+			AddFriendCommand = new DelegateCommand(OnAddFriendExecute);
 		}
 
-		private void OnCloseFriendTabExecute (object obj)
+		public void Load()
+		{
+			NavigationViewModel.Load();
+		}
+
+		private void OnCloseFriendTabExecute(object obj)
 		{
 			var friendEditVm = (IFriendEditViewModel) obj;
 
@@ -44,23 +51,24 @@ namespace FriendStorage.UI.ViewModel
 			FriendEditViewModels.Remove(friendEditVm);
 		}
 
-		private void OnOpenFriendEditView (int friendId)
+		private void OnOpenFriendEditView(int friendId)
 		{
-			var friendEditVm = FriendEditViewModels.SingleOrDefault(vm => vm.Friend.Id == friendId);
-
-			if (friendEditVm == null)
-			{
-				friendEditVm = _friendEditVmCreator();
-				friendEditVm.Load(friendId);
-				FriendEditViewModels.Add(friendEditVm);
-			}
-
-			SelectedFriendEditViewModel = friendEditVm;
+			SelectedFriendEditViewModel = FriendEditViewModels
+											.SingleOrDefault(vm => vm.Friend.Id == friendId)
+										?? LoadFriend(friendId);
 		}
 
-		public void Load ()
+		private void OnAddFriendExecute(object obj)
 		{
-			NavigationViewModel.Load();
+			SelectedFriendEditViewModel = LoadFriend(null);
+		}
+
+		private IFriendEditViewModel LoadFriend(int? friendId)
+		{
+			var friendEditVm = _friendEditVmCreator();
+			friendEditVm.Load(friendId);
+			FriendEditViewModels.Add(friendEditVm);
+			return friendEditVm;
 		}
 	}
 }
