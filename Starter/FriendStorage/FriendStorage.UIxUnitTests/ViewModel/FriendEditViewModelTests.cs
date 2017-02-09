@@ -15,19 +15,24 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 		private Mock<IFriendDataProvider> _friendDataProvider;
 		private FriendEditViewModel _viewModel;
 		private Mock<FriendSavedEvent> _friendSavedEvent;
+		private Mock<FriendDeletedEvent> _friendDeletedEvent;
 		private Mock<IEventAggregator> _eventAggregator;
 		private const int _friendId = 7;
 
 		public FriendEditViewModelTests()
 		{
 			_friendSavedEvent = new Mock<FriendSavedEvent>();
+			_friendDeletedEvent = new Mock<FriendDeletedEvent>();
 			_eventAggregator = new Mock<IEventAggregator>();
 			_eventAggregator.Setup(ea => ea.GetEvent<FriendSavedEvent>())
-							.Returns(_friendSavedEvent.Object);
+				.Returns(_friendSavedEvent.Object);
+			_eventAggregator.Setup(ea => ea.GetEvent<FriendDeletedEvent>())
+				.Returns(_friendDeletedEvent.Object);
 
 			_friendDataProvider = new Mock<IFriendDataProvider>();
 			_friendDataProvider.Setup(dp => dp.GetFriendById(_friendId))
-								.Returns(new Friend { Id = _friendId, FirstName = "Julia" });
+				.Returns(new Friend { Id = _friendId, FirstName = "Julia" });
+			_friendDataProvider.Setup(dp => dp.DeleteFriend(_friendId));
 
 			_viewModel = new FriendEditViewModel(_friendDataProvider.Object, _eventAggregator.Object);
 		}
@@ -45,7 +50,7 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 		public void Load_WithDefaultId_ShouldRaisePropertyChangedEvent()
 		{
 			var fired = _viewModel.IsPropertyChangedFired(() => _viewModel.Load(_friendId),
-															nameof(_viewModel.Friend));
+				nameof(_viewModel.Friend));
 			fired.Should().BeTrue("view model's property should have been changed on load");
 		}
 
@@ -138,6 +143,7 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 			);
 			fired.Should().BeTrue("view model's property should have been changed on load");
 		}
+
 		[Fact]
 		public void Load_NullId_ShouldCreateFriend()
 		{
@@ -154,6 +160,7 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 				"friend edit view model should not call get friend by id of the provider when " +
 				"its load method is invoked with null value");
 		}
+
 		[Fact]
 		public void Load_ExistingFriend_ShouldEnableDeleteButton()
 		{
@@ -163,6 +170,7 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 
 			isEnabled.Should().BeTrue();
 		}
+
 		[Fact]
 		public void Load_NewFriend_ShouldDisableDeleteButton()
 		{
@@ -172,6 +180,7 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 
 			isEnabled.Should().BeFalse();
 		}
+
 		[Fact]
 		public void Save_NewFriend_ShouldEnableDeleteButton()
 		{
@@ -181,6 +190,26 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 			var isEnabled = _viewModel.DeleteCommand.CanExecute(null);
 
 			isEnabled.Should().BeFalse();
+		}
+
+		[Fact]
+		public void Delete_ExistingFriend_ShouldCallDeleteOnProvider()
+		{
+			_viewModel.Load(_friendId);
+
+			_viewModel.DeleteCommand.Execute(null);
+
+			_friendDataProvider.Verify(p => p.DeleteFriend(_friendId), Times.Once);
+		}
+
+		[Fact]
+		public void Delete_ExistingFriend_ShouldPublishDeletedEvent()
+		{
+			_viewModel.Load(_friendId);
+
+			_viewModel.DeleteCommand.Execute(null);
+
+			_friendDeletedEvent.Verify(e => e.Publish(_friendId), Times.Once);
 		}
 	}
 }

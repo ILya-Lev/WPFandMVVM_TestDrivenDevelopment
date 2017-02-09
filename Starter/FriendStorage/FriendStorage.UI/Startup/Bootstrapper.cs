@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using FriendStorage.DataAccess;
 using FriendStorage.UI.DataProvider;
+using FriendStorage.UI.Events;
 using FriendStorage.UI.View;
 using FriendStorage.UI.ViewModel;
 using Prism.Events;

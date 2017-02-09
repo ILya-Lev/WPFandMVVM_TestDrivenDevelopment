@@ -21,15 +21,19 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 
 		private NavigationViewModel _navigationViewModel;
 		private FriendSavedEvent _friendSavedEvent;
+		private FriendDeletedEvent _friendDeletedEvent;
 		private Mock<IEventAggregator> _eventAggregator;
 
 		// in xUnit is an analogue of [TestInitialize] decorated MSTest method
 		public NavigationViewModelTests()
 		{
 			_friendSavedEvent = new FriendSavedEvent();
+			_friendDeletedEvent = new FriendDeletedEvent();
 			_eventAggregator = new Mock<IEventAggregator>();
 			_eventAggregator.Setup(ea => ea.GetEvent<FriendSavedEvent>())
 							.Returns(_friendSavedEvent);
+			_eventAggregator.Setup(ea => ea.GetEvent<FriendDeletedEvent>())
+							.Returns(_friendDeletedEvent);
 
 			var mockedService = new Mock<INavigationDataProvider>(MockBehavior.Strict);
 			mockedService.Setup(ds => ds.GetAllFriends()).Returns(_friends);
@@ -93,6 +97,16 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 
 			var addedItem = _navigationViewModel.Friends.Single(item => item.Id == payload.Id);
 			addedItem.DisplayMember.Should().Be($"{payload.FirstName} ");
+		}
+
+		[Fact]
+		public void Delete_ExistingFriend_ShouldRemoveItemFromList()
+		{
+			_navigationViewModel.Load();
+			_friendDeletedEvent.Publish(_friends[0].Id);
+			_navigationViewModel.Friends.Should()
+				.NotContain(item => item.Id == _friends[0].Id,
+					$"We've just deleted the friend with id ={_friends[0].Id}");
 		}
 	}
 }

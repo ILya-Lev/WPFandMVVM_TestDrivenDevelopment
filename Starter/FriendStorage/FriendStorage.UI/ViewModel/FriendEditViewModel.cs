@@ -1,4 +1,4 @@
-﻿using FriendStorage.Model;
+using FriendStorage.Model;
 using FriendStorage.UI.Command;
 using FriendStorage.UI.DataProvider;
 using FriendStorage.UI.Events;
@@ -31,7 +31,7 @@ namespace FriendStorage.UI.ViewModel
 		public ICommand DeleteCommand { get; }
 
 		public FriendEditViewModel(IFriendDataProvider friendDataProvider,
-									IEventAggregator eventAggregator)
+			IEventAggregator eventAggregator)
 		{
 			_friendDataProvider = friendDataProvider;
 			_eventAggregator = eventAggregator;
@@ -42,8 +42,8 @@ namespace FriendStorage.UI.ViewModel
 		public void Load(int? friendId)
 		{
 			var friend = friendId.HasValue
-						? _friendDataProvider.GetFriendById(friendId.Value)
-						: new Friend();
+				? _friendDataProvider.GetFriendById(friendId.Value)
+				: new Friend();
 			Friend = new FriendWrapper(friend);
 
 			Action raiseCanExecuteChanged =
@@ -75,7 +75,8 @@ namespace FriendStorage.UI.ViewModel
 
 		private void OnDeleteExecute(object obj)
 		{
-			throw new NotImplementedException();
+			_friendDataProvider.DeleteFriend(Friend.Id);
+			_eventAggregator.GetEvent<FriendDeletedEvent>().Publish(Friend.Id);
 		}
 	}
 }

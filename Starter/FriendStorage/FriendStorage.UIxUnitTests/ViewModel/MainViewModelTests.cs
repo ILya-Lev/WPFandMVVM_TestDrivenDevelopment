@@ -18,15 +18,19 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 		private readonly Mock<IEventAggregator> _eventAggregator;
 		private readonly List<Mock<IFriendEditViewModel>> _friendEditVmMocks;
 		private readonly OpenFriendEditViewEvent _openFriendEvent;
+		private readonly FriendDeletedEvent _friendDeletedEvent;
 		private MainViewModel _mainViewModel;
 		private Mock<INavigationViewModel> _navigationVm;
 
 		public MainViewModelTests()
 		{
 			_openFriendEvent = new OpenFriendEditViewEvent();
+			_friendDeletedEvent = new FriendDeletedEvent();
 			_eventAggregator = new Mock<IEventAggregator>();
 			_eventAggregator.Setup(ea => ea.GetEvent<OpenFriendEditViewEvent>())
 							.Returns(_openFriendEvent);
+			_eventAggregator.Setup(ea => ea.GetEvent<FriendDeletedEvent>())
+							.Returns(_friendDeletedEvent);
 
 			_friendEditVmMocks = new List<Mock<IFriendEditViewModel>>();
 
@@ -126,6 +130,19 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 			friendEditVm.Should().Be(_mainViewModel.SelectedFriendEditViewModel,
 										"created friend should be selected");
 			_friendEditVmMocks.First().Verify(vm => vm.Load(null), Times.Once);
+		}
+
+		[Fact]
+		public void Delete_ExistingFriend_ShouldCloseFriendEditTab()
+		{
+			_openFriendEvent.Publish(7);
+
+			_mainViewModel.FriendEditViewModels.Count.Should().Be(1);
+			_mainViewModel.FriendEditViewModels.First().Friend.Id.Should().Be(7);
+
+			_friendDeletedEvent.Publish(7);
+
+			_mainViewModel.FriendEditViewModels.Count.Should().Be(0);
 		}
 	}
 }
