@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using FriendStorage.Model;
 using FriendStorage.UI.DataProvider;
+using FriendStorage.UI.Dialogs;
 using FriendStorage.UI.Events;
 using FriendStorage.UI.ViewModel;
 using FriendStorage.UIxUnitTests.Extensions;
@@ -17,6 +18,7 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 		private Mock<FriendSavedEvent> _friendSavedEvent;
 		private Mock<FriendDeletedEvent> _friendDeletedEvent;
 		private Mock<IEventAggregator> _eventAggregator;
+		private Mock<IMessageDialogService> _messageDialogService;
 		private const int _friendId = 7;
 
 		public FriendEditViewModelTests()
@@ -34,7 +36,9 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 				.Returns(new Friend { Id = _friendId, FirstName = "Julia" });
 			_friendDataProvider.Setup(dp => dp.DeleteFriend(_friendId));
 
-			_viewModel = new FriendEditViewModel(_friendDataProvider.Object, _eventAggregator.Object);
+			_messageDialogService = new Mock<IMessageDialogService>();
+
+			_viewModel = new FriendEditViewModel(_friendDataProvider.Object, _eventAggregator.Object, _messageDialogService.Object);
 		}
 
 		[Fact]
@@ -192,24 +196,37 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 			isEnabled.Should().BeFalse();
 		}
 
-		[Fact]
-		public void Delete_ExistingFriend_ShouldCallDeleteOnProvider()
+		[Theory]
+		[InlineData(true, 1)]
+		[InlineData(false, 0)]
+		public void Delete_ExistingFriend_ShouldCallDeleteOnProvider(bool userSelectsYes,
+																	int friendDeletedTimes)
 		{
 			_viewModel.Load(_friendId);
+			_messageDialogService.Setup(d => d.Show(It.IsAny<string>(), It.IsAny<string>()))
+								.Returns(userSelectsYes);
 
 			_viewModel.DeleteCommand.Execute(null);
 
-			_friendDataProvider.Verify(p => p.DeleteFriend(_friendId), Times.Once);
+			_friendDataProvider.Verify(p => p.DeleteFriend(_friendId),
+										Times.Exactly(friendDeletedTimes));
+			_messageDialogService.Verify(d => d.Show(It.IsAny<string>(), It.IsAny<string>()),
+										Times.Once);
 		}
 
-		[Fact]
-		public void Delete_ExistingFriend_ShouldPublishDeletedEvent()
+		[Theory]
+		[InlineData(true, 1)]
+		[InlineData(false, 0)]
+		public void Delete_ExistingFriend_ShouldPublishDeletedEvent(bool userSelectsYes,
+																	int friendDeletedTimes)
 		{
 			_viewModel.Load(_friendId);
+			_messageDialogService.Setup(d => d.Show(It.IsAny<string>(), It.IsAny<string>()))
+								.Returns(userSelectsYes);
 
 			_viewModel.DeleteCommand.Execute(null);
 
-			_friendDeletedEvent.Verify(e => e.Publish(_friendId), Times.Once);
+			_friendDeletedEvent.Verify(e => e.Publish(_friendId), Times.Exactly(friendDeletedTimes));
 		}
 	}
 }

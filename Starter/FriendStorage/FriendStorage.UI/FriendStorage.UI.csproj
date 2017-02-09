@@ -71,6 +71,11 @@
     <Compile Include="DataProvider\IFriendDataProvider.cs" />
     <Compile Include="DataProvider\INavigationDataProvider.cs" />
     <Compile Include="DataProvider\NavigationDataProvider.cs" />
+    <Compile Include="Dialogs\IMessageDialogService.cs" />
+    <Compile Include="Dialogs\MessageDialogService.cs" />
+    <Compile Include="Dialogs\YesNoDialog.xaml.cs">
+      <DependentUpon>YesNoDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Events\FriendDeletedEvent.cs" />
     <Compile Include="ViewModel\FriendEditViewModel.cs" />
     <Compile Include="Events\FriendSavedEvent.cs" />
@@ -95,6 +100,10 @@
     </Compile>
     <Compile Include="Command\DelegateCommand.cs" />
     <Compile Include="Wrappers\FriendWrapper.cs" />
+    <Page Include="Dialogs\YesNoDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles\Brushes.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
