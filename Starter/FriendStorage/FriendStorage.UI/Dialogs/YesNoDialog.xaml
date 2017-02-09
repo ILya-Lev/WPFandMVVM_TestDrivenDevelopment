@@ -5,15 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FriendStorage.UI.Dialogs"
         mc:Ignorable="d"
-        Title="YesNoDialog" Height="159.533" Width="300">
+        Background="DarkGray"
+        FontSize="{StaticResource DefaultFontSize}"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="ThreeDBorderWindow"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize" MinWidth="300" MinHeight="140" SizeToContent="WidthAndHeight"
+        Title="YesNoDialog">
     <Grid RenderTransformOrigin="0.504,0.327">
         <Grid.RowDefinitions>
             <RowDefinition Height="141*"/>
             <RowDefinition Height="131*"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="_textBlock" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Button x:Name="_btnYes" Content="Yes" HorizontalAlignment="Left" Margin="40,21,0,0" Grid.Row="1" VerticalAlignment="Top" Click="OnClickYesButton"/>
-        <Button x:Name="_btnNo" Content="No" HorizontalAlignment="Left" Margin="178,21,0,0" Grid.Row="1" VerticalAlignment="Top" Width="76" Click="OnClickNoButton"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel.Resources>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                    <Setter Property="Margin" Value="5"/>
+                    <Setter Property="Width" Value="70"/>
+                </Style>
+            </StackPanel.Resources>
+            <Button Content="Yes" Click="OnClickYesButton"/>
+            <Button Content="No" Click="OnClickNoButton"/>
+
+        </StackPanel>
 
     </Grid>
 </Window>
