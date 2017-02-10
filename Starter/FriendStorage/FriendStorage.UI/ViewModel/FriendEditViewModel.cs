@@ -47,7 +47,7 @@ namespace FriendStorage.UI.ViewModel
 		{
 			var friend = friendId.HasValue
 				? _friendDataProvider.GetFriendById(friendId.Value)
-				: new Friend();
+				: new Friend { Address = new Address() };
 			Friend = new FriendWrapper(friend);
 
 			Action raiseCanExecuteChanged =

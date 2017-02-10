@@ -47,7 +47,14 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 					var friendEditVm = new Mock<IFriendEditViewModel>();
 					friendEditVm.Setup(vm => vm.Load(It.IsAny<int>()))
 					.Callback<int?>(id => friendEditVm.Setup(vm => vm.Friend)
-										.Returns(new FriendWrapper(new Friend { Id = id.Value })));
+										.Returns(new FriendWrapper(
+													new Friend
+													{
+														Id = id.Value,
+														Address = new Address()
+													})
+												)
+									);
 					_friendEditVmMocks.Add(friendEditVm);
 					return friendEditVm.Object;
 				},

@@ -99,7 +99,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Command\DelegateCommand.cs" />
+    <Compile Include="Wrappers\AddressWrapper.cs" />
     <Compile Include="Wrappers\FriendWrapper.cs" />
+    <Compile Include="Wrappers\ModelWrapper.cs" />
     <Page Include="Dialogs\YesNoDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -109,6 +111,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\Button.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ComboBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

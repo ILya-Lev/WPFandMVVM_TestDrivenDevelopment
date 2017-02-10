@@ -40,7 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Address.cs" />
     <Compile Include="Friend.cs" />
+    <Compile Include="FriendEmail.cs" />
+    <Compile Include="FriendGroup.cs" />
     <Compile Include="LookupItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,63 +1,29 @@
 ﻿using FriendStorage.Model;
-using FriendStorage.UI.ViewModel;
 using System;
-using System.Runtime.CompilerServices;
 
 namespace FriendStorage.UI.Wrappers
 {
-	public class FriendWrapper : ViewModelBase
+	public class FriendWrapper : ModelWrapper<Friend>
 	{
-		private Friend _friend;
-		private bool _isChanged;
-
-		public Friend Model => _friend;
-		public bool IsChanged
+		public FriendWrapper(Friend friend) : base(friend)
 		{
-			get { return _isChanged; }
-			private set { _isChanged = value; OnPropertyChanged(); }
+			Address = new AddressWrapper(friend.Address);
 		}
 
-		public FriendWrapper(Friend friend)
-		{
-			_friend = friend;
-		}
+		public void AcceptChanges() => IsChanged = false;
 
-		public void AcceptChanges()
-		{
-			IsChanged = false;
-		}
+		public int Id => Model.Id;
 
-		public int Id => _friend.Id;
+		public int FriendGroupId { get { return Model.FriendGroupId; } set { SetValue(value); } }
 
-		public string FirstName
-		{
-			get { return _friend.FirstName; }
-			set { _friend.FirstName = value; OnPropertyChanged(); }
-		}
+		public string FirstName { get { return Model.FirstName; } set { SetValue(value); } }
 
-		public string LastName
-		{
-			get { return _friend.LastName; }
-			set { _friend.LastName = value; OnPropertyChanged(); }
-		}
+		public string LastName { get { return Model.LastName; } set { SetValue(value); } }
 
-		public DateTime? Birthday
-		{
-			get { return _friend.Birthday; }
-			set { _friend.Birthday = value; OnPropertyChanged(); }
-		}
+		public DateTime? Birthday { get { return Model.Birthday; } set { SetValue(value); } }
 
-		public bool IsDeveloper
-		{
-			get { return _friend.IsDeveloper; }
-			set { _friend.IsDeveloper = value; OnPropertyChanged(); }
-		}
+		public bool IsDeveloper { get { return Model.IsDeveloper; } set { SetValue(value); } }
 
-		protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			base.OnPropertyChanged(propertyName);
-			if (propertyName != nameof(IsChanged))
-				IsChanged = true;
-		}
+		public AddressWrapper Address { get; }
 	}
 }

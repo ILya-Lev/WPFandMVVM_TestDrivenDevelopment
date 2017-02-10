@@ -83,6 +83,7 @@
     <Compile Include="ViewModel\MainViewModelTests.cs" />
     <Compile Include="ViewModel\NavigationItemViewModelTests.cs" />
     <Compile Include="ViewModel\NavigationViewModelTests.cs" />
+    <Compile Include="Wrappers\FriendWrapperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
