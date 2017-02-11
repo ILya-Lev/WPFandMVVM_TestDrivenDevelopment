@@ -100,6 +100,7 @@
     </Compile>
     <Compile Include="Command\DelegateCommand.cs" />
     <Compile Include="Wrappers\AddressWrapper.cs" />
+    <Compile Include="Wrappers\FriendEmailWrapper.cs" />
     <Compile Include="Wrappers\FriendWrapper.cs" />
     <Compile Include="Wrappers\ModelWrapper.cs" />
     <Page Include="Dialogs\YesNoDialog.xaml">

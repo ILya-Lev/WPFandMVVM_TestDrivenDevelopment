@@ -4,6 +4,7 @@ using FriendStorage.UI.Wrappers;
 using FriendStorage.UIxUnitTests.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace FriendStorage.UIxUnitTests.Wrappers
@@ -11,6 +12,7 @@ namespace FriendStorage.UIxUnitTests.Wrappers
 	public class FriendWrapperTests
 	{
 		private readonly Friend _expectedFriend;
+		private List<FriendEmail> _expectedFriendEmails;
 
 		public FriendWrapperTests()
 		{
@@ -21,6 +23,14 @@ namespace FriendStorage.UIxUnitTests.Wrappers
 				Address = new Address(),
 				Emails = new List<FriendEmail>()
 			};
+
+			_expectedFriendEmails = new[]
+			{
+				new FriendEmail {Email = "user@domain.com", Comment = "some data"},
+				new FriendEmail {Email = "user@domain.gov", Comment = "top secret"},
+				new FriendEmail {Email = "user@domain.net", Comment = "general data"},
+			}.ToList();
+
 		}
 
 		[Fact]
@@ -40,6 +50,17 @@ namespace FriendStorage.UIxUnitTests.Wrappers
 			};
 
 			constructioning.ShouldThrow<ArgumentNullException>("provided friend instance is null");
+		}
+		[Fact]
+		public void Constructed_NullEmail_ShouldThrowException()
+		{
+			Action constructioning = () =>
+			{
+				_expectedFriend.Emails = null;
+				var wrapper = new FriendWrapper(_expectedFriend);
+			};
+
+			constructioning.ShouldThrow<ArgumentNullException>("provided friend email list is null");
 		}
 
 		[Fact]
@@ -149,6 +170,59 @@ namespace FriendStorage.UIxUnitTests.Wrappers
 			var wrapper = new FriendWrapper(_expectedFriend);
 
 			wrapper.Address.Should().NotBeNull("is initialized in ctor");
+		}
+
+		[Fact]
+		public void Initialize_EmailNotEmpty_ShouldContainAllInitialOnes()
+		{
+			_expectedFriend.Emails = _expectedFriendEmails;
+
+			var wrapper = new FriendWrapper(_expectedFriend);
+
+			CheckIfEmailsAreSynchromized(wrapper);
+		}
+
+		[Fact]
+		public void Add_Email_ShouldUpdateModel()
+		{
+			_expectedFriend.Emails = _expectedFriendEmails;
+			var wrapper = new FriendWrapper(_expectedFriend);
+			var additionaEmails = new[] {
+				new FriendEmail{Comment = "addtional comment",Email = "add.1.user@domain.com"},
+				new FriendEmail{Comment = "addtional 2 comment",Email = "add.2.user@domain.com"},
+			};
+
+			wrapper.Emails.Add(new FriendEmailWrapper(additionaEmails[0]));
+			wrapper.Emails.Add(new FriendEmailWrapper(additionaEmails[1]));
+
+			CheckIfEmailsAreSynchromized(wrapper);
+		}
+		[Fact]
+		public void Remove_Email_ShouldUpdateModel()
+		{
+			_expectedFriend.Emails = _expectedFriendEmails;
+			var wrapper = new FriendWrapper(_expectedFriend);
+
+			wrapper.Emails.RemoveAt(0);
+
+			CheckIfEmailsAreSynchromized(wrapper);
+		}
+		[Fact]
+		public void Clear_Email_ShouldUpdateModel()
+		{
+			_expectedFriend.Emails = _expectedFriendEmails;
+			var wrapper = new FriendWrapper(_expectedFriend);
+
+			wrapper.Emails.Clear();
+
+			CheckIfEmailsAreSynchromized(wrapper);
+		}
+
+		private void CheckIfEmailsAreSynchromized(FriendWrapper wrapper)
+		{
+			wrapper.Emails.Count.Should().Be(_expectedFriend.Emails.Count);
+			wrapper.Emails.All(e => _expectedFriend.Emails.Any(fe => fe == e.Model))
+				.Should().BeTrue("wrapper should contain all initial emails");
 		}
 	}
 }

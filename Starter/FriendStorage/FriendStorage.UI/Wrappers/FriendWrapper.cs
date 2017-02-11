@@ -1,5 +1,7 @@
 ﻿using FriendStorage.Model;
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace FriendStorage.UI.Wrappers
 {
@@ -8,6 +10,13 @@ namespace FriendStorage.UI.Wrappers
 		public FriendWrapper(Friend friend) : base(friend)
 		{
 			Address = new AddressWrapper(friend.Address);
+			//Address.PropertyChanged += (sender, args) => friend.Address = (Address) sender;
+
+			Emails = new ObservableCollection<FriendEmailWrapper>
+			(
+				friend.Emails.Select(e => new FriendEmailWrapper(e))
+			);
+			RegisterCollection(Emails, Model.Emails);
 		}
 
 		public void AcceptChanges() => IsChanged = false;
@@ -25,5 +34,7 @@ namespace FriendStorage.UI.Wrappers
 		public bool IsDeveloper { get { return Model.IsDeveloper; } set { SetValue(value); } }
 
 		public AddressWrapper Address { get; }
+
+		public ObservableCollection<FriendEmailWrapper> Emails { get; }
 	}
 }
