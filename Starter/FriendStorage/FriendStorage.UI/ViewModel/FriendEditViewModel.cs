@@ -5,7 +5,6 @@ using FriendStorage.UI.Dialogs;
 using FriendStorage.UI.Events;
 using FriendStorage.UI.Wrappers;
 using Prism.Events;
-using System;
 using System.Windows.Input;
 
 namespace FriendStorage.UI.ViewModel
@@ -30,6 +29,7 @@ namespace FriendStorage.UI.ViewModel
 		}
 
 		public ICommand SaveCommand { get; }
+		public ICommand ResetCommand { get; }
 		public ICommand DeleteCommand { get; }
 
 		public FriendEditViewModel(IFriendDataProvider friendDataProvider,
@@ -40,6 +40,7 @@ namespace FriendStorage.UI.ViewModel
 			_eventAggregator = eventAggregator;
 			_messageDialogService = messageDialogService;
 			SaveCommand = new DelegateCommand(OnSaveExecute, OnCanSaveExecute);
+			ResetCommand = new DelegateCommand(OnResetExecute, OnCanSaveExecute);
 			DeleteCommand = new DelegateCommand(OnDeleteExecute, OnCanDeleteExecute);
 		}
 
@@ -50,12 +51,17 @@ namespace FriendStorage.UI.ViewModel
 				: new Friend { Address = new Address() };
 			Friend = new FriendWrapper(friend);
 
-			Action raiseCanExecuteChanged =
-				() => (SaveCommand as DelegateCommand).RaiseCanExecuteChanged();
 
-			Friend.PropertyChanged += (sender, args) => raiseCanExecuteChanged();
+			Friend.PropertyChanged += (sender, args) => RaiseCanExecuteChanged();
 
-			raiseCanExecuteChanged();
+			RaiseCanExecuteChanged();
+		}
+
+		private void RaiseCanExecuteChanged()
+		{
+			(SaveCommand as DelegateCommand).RaiseCanExecuteChanged();
+			(ResetCommand as DelegateCommand).RaiseCanExecuteChanged();
+			(DeleteCommand as DelegateCommand).RaiseCanExecuteChanged();
 		}
 
 		private bool OnCanSaveExecute(object arg)
@@ -72,6 +78,11 @@ namespace FriendStorage.UI.ViewModel
 			(DeleteCommand as DelegateCommand).RaiseCanExecuteChanged();
 		}
 
+		private void OnResetExecute(object obj)
+		{
+			Friend.RejectChanges();
+		}
+
 		private bool OnCanDeleteExecute(object arg)
 		{
 			return Friend != null && Friend.Id != 0;
@@ -83,7 +94,7 @@ namespace FriendStorage.UI.ViewModel
 							 $" '{Friend.FirstName} {Friend.LastName}'?";
 			const string title = "Delete a friend";
 
-			if (!_messageDialogService.Show(message, title)) return;
+			if(!_messageDialogService.Show(message, title)) return;
 
 			_friendDataProvider.DeleteFriend(Friend.Id);
 			_eventAggregator.GetEvent<FriendDeletedEvent>().Publish(Friend.Id);
