@@ -10,7 +10,7 @@ namespace FriendStorage.UI.Wrappers
 		public FriendWrapper(Friend friend) : base(friend)
 		{
 			Address = new AddressWrapper(friend.Address);
-			//Address.PropertyChanged += (sender, args) => friend.Address = (Address) sender;
+			RegisterComplex(Address);
 
 			Emails = new ObservableCollection<FriendEmailWrapper>
 			(

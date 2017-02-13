@@ -11,29 +11,33 @@ namespace FriendStorage.UI.Wrappers
 {
 	public class ModelWrapper<TModel> : ViewModelBase, IRevertibleChangeTracking
 	{
-		protected readonly Dictionary<string, object> _originalValues = new Dictionary<string, object>();
+		private readonly Dictionary<string, object> _originalValues = new Dictionary<string, object>();
+		private List<IRevertibleChangeTracking> _trackingObjects = new List<IRevertibleChangeTracking>();
 
 		public TModel Model { get; }
 		public ModelWrapper(TModel model)
 		{
-			if(model == null) throw new ArgumentNullException(nameof(model));
+			if (model == null) throw new ArgumentNullException(nameof(model));
 			Model = model;
 		}
 
-		public bool IsChanged => _originalValues.Any();
+		public bool IsChanged => _originalValues.Any() || _trackingObjects.Any(t => t.IsChanged);
 
 		public void RejectChanges()
 		{
-			foreach(var pair in _originalValues)
+			foreach (var pair in _originalValues)
 			{
 				typeof(TModel).GetProperty(pair.Key).SetValue(Model, pair.Value);
 			}
+			_trackingObjects.ForEach(t => t.RejectChanges());
+
 			AcceptChanges();
 		}
 
 		public void AcceptChanges()
 		{
 			_originalValues.Clear();
+			_trackingObjects.ForEach(t => t.AcceptChanges());
 			//WPF specific trick - forces the framework to call get over all object's properties
 			//all the data binding will update reread the values
 			OnPropertyChanged("");
@@ -43,7 +47,7 @@ namespace FriendStorage.UI.Wrappers
 		{
 			var propertyInfo = Model.GetType().GetProperty(propertyName);
 			var oldValue = propertyInfo.GetValue(Model);
-			if(!Equals(oldValue, value))
+			if (!Equals(oldValue, value))
 			{
 				UpdateOriginalValue(oldValue, value, propertyName);
 				propertyInfo.SetValue(Model, value);
@@ -54,12 +58,12 @@ namespace FriendStorage.UI.Wrappers
 
 		private void UpdateOriginalValue<TValue>(TValue oldValue, TValue value, string propertyName)
 		{
-			if(!_originalValues.ContainsKey(propertyName))
+			if (!_originalValues.ContainsKey(propertyName))
 			{
 				_originalValues.Add(propertyName, oldValue);
 				OnPropertyChanged(nameof(IsChanged));
 			}
-			else if(Equals(_originalValues[propertyName], value))
+			else if (Equals(_originalValues[propertyName], value))
 			{
 				_originalValues.Remove(propertyName);
 				OnPropertyChanged(nameof(IsChanged));
@@ -88,16 +92,31 @@ namespace FriendStorage.UI.Wrappers
 		{
 			wrapperCollection.CollectionChanged += (sender, e) =>
 			{
-				if(e.Action == NotifyCollectionChangedAction.Add)
+				if (e.Action == NotifyCollectionChangedAction.Add)
 					modelCollection.AddRange(e.NewItems.Cast<TWrapper>().Select(ew => ew.Model));
-				else if(e.Action == NotifyCollectionChangedAction.Remove)
+				else if (e.Action == NotifyCollectionChangedAction.Remove)
 				{
-					foreach(var email in e.OldItems.Cast<TWrapper>().Select(ew => ew.Model))
+					foreach (var email in e.OldItems.Cast<TWrapper>().Select(ew => ew.Model))
 						modelCollection.Remove(email);
 				}
-				else if(e.Action == NotifyCollectionChangedAction.Reset)
+				else if (e.Action == NotifyCollectionChangedAction.Reset)
 					modelCollection.Clear();
 			};
+		}
+
+		protected void RegisterComplex<TM>(ModelWrapper<TM> complexProperty)
+		{
+			if (!_trackingObjects.Contains(complexProperty))
+			{
+				_trackingObjects.Add(complexProperty);
+				complexProperty.PropertyChanged += TrackingObjectPropertyChanged;
+			}
+		}
+
+		private void TrackingObjectPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(IsChanged))
+				OnPropertyChanged(nameof(IsChanged));
 		}
 	}
 }

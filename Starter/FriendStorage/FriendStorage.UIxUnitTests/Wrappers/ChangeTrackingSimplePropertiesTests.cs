@@ -11,7 +11,6 @@ namespace FriendStorage.UIxUnitTests.Wrappers
 	public class ChangeTrackingSimplePropertiesTests
 	{
 		private readonly Friend _expectedFriend;
-		private List<FriendEmail> _expectedFriendEmails;
 		private FriendWrapper _wrapper;
 
 		public ChangeTrackingSimplePropertiesTests()
