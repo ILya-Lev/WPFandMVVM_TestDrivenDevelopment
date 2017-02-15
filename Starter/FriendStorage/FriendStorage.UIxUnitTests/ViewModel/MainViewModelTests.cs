@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using FriendStorage.Model;
+using FriendStorage.UI.Dialogs;
 using FriendStorage.UI.Events;
 using FriendStorage.UI.ViewModel;
 using FriendStorage.UI.Wrappers;
@@ -21,6 +22,7 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 		private readonly FriendDeletedEvent _friendDeletedEvent;
 		private MainViewModel _mainViewModel;
 		private Mock<INavigationViewModel> _navigationVm;
+		private Mock<IMessageDialogService> _messageDialogService;
 
 		public MainViewModelTests()
 		{
@@ -36,6 +38,8 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 
 			_navigationVm = new Mock<INavigationViewModel>(MockBehavior.Strict);
 			_navigationVm.Setup(vm => vm.Load());
+			_messageDialogService = new Mock<IMessageDialogService>();
+
 			_mainViewModel = GenerateMainViewModel(_navigationVm.Object);
 		}
 
@@ -58,7 +62,7 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 					_friendEditVmMocks.Add(friendEditVm);
 					return friendEditVm.Object;
 				},
-				_eventAggregator.Object);
+				_eventAggregator.Object, _messageDialogService.Object);
 		}
 
 		[Fact]
@@ -119,6 +123,8 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 		public void CloseFriendTabCommand_ShouldRemoveFriendEditViewModel()
 		{
 			_openFriendEvent.Publish(7);
+			_messageDialogService.Setup(d => d.Show(It.IsAny<string>(), It.IsAny<string>()))
+								.Returns(false);
 			var friendEditVm = _friendEditVmMocks.Single(vm => vm.Object.Friend.Id == 7);
 
 			_mainViewModel.CloseFriendTabCommand.Execute(friendEditVm.Object);

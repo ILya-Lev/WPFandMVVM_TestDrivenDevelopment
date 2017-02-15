@@ -97,7 +97,7 @@ namespace FriendStorage.UI.ViewModel
 
 		private void OnDeleteExecute(object obj)
 		{
-			string message = "Do you really whant to delete the friend" +
+			string message = "Do you really want to delete the friend" +
 							 $" '{Friend.FirstName} {Friend.LastName}'?";
 			const string title = "Delete a friend";
 

@@ -1,4 +1,5 @@
 ﻿using FriendStorage.UI.Command;
+using FriendStorage.UI.Dialogs;
 using FriendStorage.UI.Events;
 using Prism.Events;
 using System;
@@ -11,6 +12,7 @@ namespace FriendStorage.UI.ViewModel
 	public class MainViewModel : ViewModelBase
 	{
 		private readonly Func<IFriendEditViewModel> _friendEditVmCreator;
+		private readonly IMessageDialogService _messageDialogService;
 		private IFriendEditViewModel _selectedFriendEditViewModel;
 
 		public INavigationViewModel NavigationViewModel { get; }
@@ -26,9 +28,11 @@ namespace FriendStorage.UI.ViewModel
 
 		public MainViewModel(INavigationViewModel navigationViewModel,
 							Func<IFriendEditViewModel> friendEditVmCreator,
-							IEventAggregator eventAggregator)
+							IEventAggregator eventAggregator,
+							IMessageDialogService messageDialogService)
 		{
 			_friendEditVmCreator = friendEditVmCreator;
+			_messageDialogService = messageDialogService;
 
 			NavigationViewModel = navigationViewModel;
 			FriendEditViewModels = new ObservableCollection<IFriendEditViewModel>();
@@ -47,7 +51,16 @@ namespace FriendStorage.UI.ViewModel
 		private void OnCloseFriendTabExecute(object obj)
 		{
 			var friendEditVm = (IFriendEditViewModel) obj;
+			if (friendEditVm.Friend.IsChanged)
+			{
+				string message = "Do you want to close the tab for " +
+								$"'{friendEditVm.Friend.FirstName} {friendEditVm.Friend.LastName}'?\n" +
+								 "All unsaved changes will be lost";
+				const string title = "Close the tab!";
 
+				if (!_messageDialogService.Show(message, title))
+					return;
+			}
 			// SelectedFriendEditViewModel is changed by the View control
 			FriendEditViewModels.Remove(friendEditVm);
 		}
