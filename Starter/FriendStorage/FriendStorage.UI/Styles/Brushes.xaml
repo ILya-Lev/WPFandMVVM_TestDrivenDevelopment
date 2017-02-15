@@ -15,4 +15,7 @@
   <SolidColorBrush x:Key="ButtonIsPressedBackgroundBrush" Color="#999999"/>
   <SolidColorBrush x:Key="ButtonIsPressedBorderBrush" Color="#777777"/>
   <SolidColorBrush x:Key="ButtonMouseOverBorderBrush" Color="#777777"/>
+    
+  <SolidColorBrush x:Key="IsChangedBackgroundBrush" Color="SteelBlue"/>
+      
 </ResourceDictionary>
