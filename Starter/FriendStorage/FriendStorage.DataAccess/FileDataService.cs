@@ -82,10 +82,15 @@ namespace FriendStorage.DataAccess
 			if (!File.Exists(StorageFile))
 			{
 				var address = new Address { City = "Munich" };
+				var emails = new List<FriendEmail>
+				{
+					new FriendEmail {Email = "user@domain.com", Comment = "default email"},
+					new FriendEmail {Email = "user@domain.net", Comment = "wired email"},
+				};
 				return new List<Friend>
 				{
 					new Friend{Id=1,FirstName = "Thomas",LastName="Huber",
-						Birthday = new DateTime(1980,10,28), IsDeveloper = true, Address = address},
+						Birthday = new DateTime(1980,10,28), IsDeveloper = true, Address = address, Emails = emails},
 					new Friend{Id=2,FirstName = "Julia",LastName="Huber",
 						Birthday = new DateTime(1982,10,10), Address = address},
 					new Friend{Id=3,FirstName="Anna",LastName="Huber",

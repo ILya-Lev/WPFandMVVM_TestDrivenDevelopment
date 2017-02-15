@@ -9,14 +9,16 @@
              Background="#333333">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" MinHeight="37"/>
-            <RowDefinition Height="Auto" MinHeight="37"/>
-            <RowDefinition Height="Auto" MinHeight="37"/>
-            <RowDefinition Height="Auto" MinHeight="37"/>
-            <RowDefinition Height="Auto" MinHeight="37"/>
-            <RowDefinition Height="43"/>
-            <RowDefinition Height="55*"/>
-            <RowDefinition Height="21*"/>
+            <RowDefinition Height="Auto" MinHeight="40"/>
+            <RowDefinition Height="Auto" MinHeight="40"/>
+            <RowDefinition Height="Auto" MinHeight="40"/>
+            <RowDefinition Height="Auto" MinHeight="40"/>
+            <RowDefinition Height="Auto" MinHeight="40"/>
+            <RowDefinition Height="Auto" MinHeight="40"/>
+            <RowDefinition Height="Auto" MinHeight="40"/>
+            <RowDefinition Height="Auto" MinHeight="40"/>
+            <RowDefinition Height="Auto" MinHeight="40"/>
+            <RowDefinition Height="Auto" MinHeight="40"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -26,37 +28,51 @@
             <ColumnDefinition Width="7*"/>
         </Grid.ColumnDefinitions>
 
-        <Label Content="Firstname" Margin="0,6,0,5"/>
-        <TextBox Text="{Binding Friend.FirstName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Margin="0,10,0,9"/>
+        <Label Content="Firstname"/>
+        <TextBox Text="{Binding Friend.FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"/>
 
-        <Label Content="Lastname" Grid.Row="1" Margin="0,7,0,4"/>
-        <TextBox Text="{Binding Friend.LastName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="0,11,0,8"/>
+        <Label Content="Lastname" Grid.Row="1"/>
+        <TextBox Text="{Binding Friend.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" />
 
-        <Label Content="Birthday" Grid.Row="2" Margin="0,8,0,3"/>
-        <DatePicker SelectedDate="{Binding Friend.Birthday,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="0,11,0,6"/>
+        <Label Content="Birthday" Grid.Row="2"/>
+        <DatePicker SelectedDate="{Binding Friend.Birthday, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1"/>
 
-        <Label Content="Is Developer" Grid.Row="3" Margin="0,9,0,2"/>
+        <Label Content="Is Developer" Grid.Row="3" />
         <CheckBox IsChecked="{Binding Friend.IsDeveloper,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                     Grid.Row="3"  Grid.Column="1" Margin="0,3,0,33" Grid.RowSpan="2"/>
+                     Grid.Row="3"  Grid.Column="1" Grid.RowSpan="2"/>
 
-        <Label Content="City" Grid.Column="2" Margin="0,6,0,5"/>
-        <TextBox Text="{Binding Friend.Address.City, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Margin="0,10,0,9"/>
+        <Label Content="City" Grid.Column="2" />
+        <TextBox Text="{Binding Friend.Address.City, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" />
 
-        <Label Content="Street" Grid.Column="2" Grid.Row="1" Margin="0,7,0,4"/>
-        <TextBox Text="{Binding Friend.Address.Street, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="1" Margin="0,11,0,8"/>
+        <Label Content="Street" Grid.Column="2" Grid.Row="1" />
+        <TextBox Text="{Binding Friend.Address.Street, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="1"/>
 
-        <Label Content="Streetnumber" Grid.Column="2" Grid.Row="2" Margin="0,8,0,3"/>
-        <TextBox Text="{Binding Friend.Address.Streetnumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="2" Margin="0,12,0,7"/>
+        <Label Content="Streetnumber" Grid.Column="2" Grid.Row="2" />
+        <TextBox Text="{Binding Friend.Address.Streetnumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Grid.Row="2"/>
 
-        <Label Content="Friendgroup" Grid.Row="4" Margin="0,14,0,4"/>
-        <ComboBox x:Name="comboBox" Text="Family" Grid.Column="1" Grid.Row="4" Style="{StaticResource {x:Type ComboBox}}" Margin="0,4,0,15"/>
+        <Label Content="Friendgroup" Grid.Row="4" />
+        <ComboBox x:Name="comboBox" Text="{Binding Friend.FriendGroupId}" Grid.Column="1" Grid.Row="4" Style="{StaticResource {x:Type ComboBox}}"/>
 
-        <Label Content="Emails" Grid.Row="5"/>
+        <Label Content="Emails" Grid.Row="5" />
 
-        <StackPanel Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal">
+        <StackPanel Grid.Row="9" Grid.ColumnSpan="2" Orientation="Horizontal">
             <Button Content="Save" Command="{Binding SaveCommand}" Margin="5"/>
             <Button Content="Reset" Command="{Binding ResetCommand}" Margin="5"/>
             <Button Content="Delete" Command="{Binding DeleteCommand}" Margin="5"/>
         </StackPanel>
+        <DataGrid x:Name="dataGrid" ItemsSource="{Binding Friend.Emails}" AutoGenerateColumns="False"
+                  Grid.Column="1" Grid.Row="5"
+                  Grid.ColumnSpan="3" Grid.RowSpan="4">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Email}" Header="Email" MinWidth="40"/>
+                <DataGridTextColumn Binding="{Binding Comment}" Header="Comment" MinWidth="40"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Command="{Binding AddEmailCommand}"
+                Style="{StaticResource AddButtonStyle}"
+                Grid.Row="6" HorizontalAlignment="Right" />
+        <Button Command="{Binding RemoveEmailCommand}"
+                Style="{StaticResource RemoveButtonStyle}"
+                Grid.Row="7"  HorizontalAlignment="Right" />
     </Grid>
 </UserControl>

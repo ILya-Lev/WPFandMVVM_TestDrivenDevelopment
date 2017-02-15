@@ -31,6 +31,8 @@ namespace FriendStorage.UI.ViewModel
 		public ICommand SaveCommand { get; }
 		public ICommand ResetCommand { get; }
 		public ICommand DeleteCommand { get; }
+		public ICommand AddEmailCommand { get; }
+		public ICommand RemoveEmailCommand { get; }
 
 		public FriendEditViewModel(IFriendDataProvider friendDataProvider,
 									IEventAggregator eventAggregator,
@@ -39,9 +41,13 @@ namespace FriendStorage.UI.ViewModel
 			_friendDataProvider = friendDataProvider;
 			_eventAggregator = eventAggregator;
 			_messageDialogService = messageDialogService;
+
 			SaveCommand = new DelegateCommand(OnSaveExecute, OnCanSaveExecute);
 			ResetCommand = new DelegateCommand(OnResetExecute, OnCanSaveExecute);
 			DeleteCommand = new DelegateCommand(OnDeleteExecute, OnCanDeleteExecute);
+
+			AddEmailCommand = new DelegateCommand(OnAddEmailExecute);
+			RemoveEmailCommand = new DelegateCommand(OnRemoveEmailExecute, OnCanRemoveEmailExecute);
 		}
 
 		public void Load(int? friendId)
@@ -62,6 +68,7 @@ namespace FriendStorage.UI.ViewModel
 			(SaveCommand as DelegateCommand).RaiseCanExecuteChanged();
 			(ResetCommand as DelegateCommand).RaiseCanExecuteChanged();
 			(DeleteCommand as DelegateCommand).RaiseCanExecuteChanged();
+			(RemoveEmailCommand as DelegateCommand).RaiseCanExecuteChanged();
 		}
 
 		private bool OnCanSaveExecute(object arg)
@@ -94,10 +101,26 @@ namespace FriendStorage.UI.ViewModel
 							 $" '{Friend.FirstName} {Friend.LastName}'?";
 			const string title = "Delete a friend";
 
-			if(!_messageDialogService.Show(message, title)) return;
+			if (!_messageDialogService.Show(message, title)) return;
 
 			_friendDataProvider.DeleteFriend(Friend.Id);
 			_eventAggregator.GetEvent<FriendDeletedEvent>().Publish(Friend.Id);
+		}
+
+		private void OnAddEmailExecute(object obj)
+		{
+			Friend?.Emails?.Add(new FriendEmailWrapper(new FriendEmail()));
+			(RemoveEmailCommand as DelegateCommand).RaiseCanExecuteChanged();
+		}
+
+		private bool OnCanRemoveEmailExecute(object arg)
+		{
+			return (Friend?.Emails?.Count ?? 0) > 0;
+		}
+
+		private void OnRemoveEmailExecute(object obj)
+		{
+			Friend.Emails.RemoveAt(Friend.Emails.Count - 1);
 		}
 	}
 }

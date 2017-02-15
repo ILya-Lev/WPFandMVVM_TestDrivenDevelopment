@@ -13,7 +13,7 @@
           <Border BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     Background="{TemplateBinding Background}">
-            <ContentPresenter 
+            <ContentPresenter
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                 Margin="{TemplateBinding Padding}"/>
@@ -53,6 +53,43 @@
                   <GeometryGroup>
                     <LineGeometry StartPoint="0,7" EndPoint="14,7"/>
                     <LineGeometry StartPoint="7,0" EndPoint="7,14"/>
+                  </GeometryGroup>
+                </Path.Data>
+              </Path>
+            </Viewbox>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="path" Property="Stroke" Value="#CCCCCC"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="path" Property="Stroke" Value="White"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="path" Property="Stroke" Value="Gray"/>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+    <Style x:Key="RemoveButtonStyle" TargetType="Button">
+    <Setter Property="Width" Value="20"/>
+    <Setter Property="Height" Value="20"/>
+    <Setter Property="Margin" Value="5"/>
+    <Setter Property="HorizontalAlignment" Value="Left"/>
+    <Setter Property="ToolTip" Value="Remove"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <Grid Background="Transparent">
+            <Viewbox>
+              <Path x:Name="path" Width="14" Height="14" Stroke="LightSlateGray" StrokeThickness="3">
+                <Path.Data>
+                  <GeometryGroup>
+                    <LineGeometry StartPoint="0,0" EndPoint="14,14"/>
+                    <LineGeometry StartPoint="0,14" EndPoint="14,0"/>
                   </GeometryGroup>
                 </Path.Data>
               </Path>
