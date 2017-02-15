@@ -1,6 +1,5 @@
 ﻿using FriendStorage.Model;
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace FriendStorage.UI.Wrappers
@@ -12,7 +11,7 @@ namespace FriendStorage.UI.Wrappers
 			Address = new AddressWrapper(friend.Address);
 			RegisterComplex(Address);
 
-			Emails = new ObservableCollection<FriendEmailWrapper>
+			Emails = new ChangeTrackingCollection<FriendEmailWrapper>
 			(
 				friend.Emails.Select(e => new FriendEmailWrapper(e))
 			);
@@ -45,6 +44,6 @@ namespace FriendStorage.UI.Wrappers
 
 		public AddressWrapper Address { get; }
 
-		public ObservableCollection<FriendEmailWrapper> Emails { get; }
+		public ChangeTrackingCollection<FriendEmailWrapper> Emails { get; }
 	}
 }

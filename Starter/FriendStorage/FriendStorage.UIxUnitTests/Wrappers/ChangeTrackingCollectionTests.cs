@@ -60,19 +60,18 @@ namespace FriendStorage.UIxUnitTests.Wrappers
 			_collection.RemovedItems.Should().Contain(removedEmail);
 		}
 
-		//todo lis: analyze this!
-		//[Fact]
-		//public void Modify_ExistingItem_ShouldTrackModifiedItems()
-		//{
-		//	_collection.IsChanged.Should().BeFalse("has just been initialized");
+		[Fact]
+		public void Modify_ExistingItem_ShouldTrackModifiedItems()
+		{
+			_collection.IsChanged.Should().BeFalse("has just been initialized");
 
-		//	var newEmail = new FriendEmailWrapper(new FriendEmail { Email = "boss@domain.com" });
-		//	_collection.Add(newEmail);
+			var newEmail = new FriendEmailWrapper(new FriendEmail { Email = "boss@domain.com" });
+			_collection.Add(newEmail);
 
-		//	_collection.IsChanged.Should().BeTrue("new item has been added");
-		//	_collection.AddedItems.Count.Should().Be(1);
-		//	_collection.AddedItems.Should().Contain(newEmail);
-		//}
+			_collection.IsChanged.Should().BeTrue("new item has been added");
+			_collection.AddedItems.Count.Should().Be(1);
+			_collection.AddedItems.Should().Contain(newEmail);
+		}
 
 		[Fact]
 		public void Add_NewItem_ShouldNotTrackAsModified()
@@ -86,18 +85,17 @@ namespace FriendStorage.UIxUnitTests.Wrappers
 			_collection.ModifiedItems.Count.Should().Be(0);
 		}
 
-		//todo lis: analyze this!
-		//[Fact]
-		//public void Remove_ExistingItem_ShouldNotTrackAsModified()
-		//{
-		//	_collection.IsChanged.Should().BeFalse("has just been initialized");
+		[Fact]
+		public void Remove_ExistingItem_ShouldNotTrackAsModified()
+		{
+			_collection.IsChanged.Should().BeFalse("has just been initialized");
 
-		//	var removedItem = _emails.First();
-		//	_collection.Add(removedItem);
+			var removedItem = _emails.First();
+			_collection.Remove(removedItem);
 
-		//	_collection.IsChanged.Should().BeTrue("new item has been added");
-		//	_collection.ModifiedItems.Count.Should().Be(0);
-		//}
+			_collection.IsChanged.Should().BeTrue("new item has been deleted");
+			_collection.ModifiedItems.Count.Should().Be(0);
+		}
 
 		[Fact]
 		public void AcceptChanges_AfterModification_ShouldMarkAsNotChanged()
@@ -115,21 +113,20 @@ namespace FriendStorage.UIxUnitTests.Wrappers
 			_collection.ModifiedItems.Count.Should().Be(0);
 		}
 
-		//todo lis: analyze this!
-		//[Fact]
-		//public void RejectChanges_AfterModification_ShouldRestoreInitialState()
-		//{
-		//	_collection.IsChanged.Should().BeFalse("has just been initialized");
+		[Fact]
+		public void RejectChanges_AfterModification_ShouldRestoreInitialState()
+		{
+			_collection.IsChanged.Should().BeFalse("has just been initialized");
 
-		//	var newEmail = new FriendEmailWrapper(new FriendEmail { Email = "boss@domain.com" });
-		//	_collection.Add(newEmail);
+			var newEmail = new FriendEmailWrapper(new FriendEmail { Email = "boss@domain.com" });
+			_collection.Add(newEmail);
 
-		//	_collection.RejectChanges();
+			_collection.RejectChanges();
 
-		//	_collection.IsChanged.Should().BeFalse("changes are rejected");
-		//	_collection.AddedItems.Count.Should().Be(0);
-		//	_collection.RemovedItems.Count.Should().Be(0);
-		//	_collection.ModifiedItems.Count.Should().Be(0);
-		//}
+			_collection.IsChanged.Should().BeFalse("changes are rejected");
+			_collection.AddedItems.Count.Should().Be(0);
+			_collection.RemovedItems.Count.Should().Be(0);
+			_collection.ModifiedItems.Count.Should().Be(0);
+		}
 	}
 }

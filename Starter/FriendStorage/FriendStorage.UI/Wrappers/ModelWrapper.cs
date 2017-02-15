@@ -1,7 +1,6 @@
 using FriendStorage.UI.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -85,8 +84,8 @@ namespace FriendStorage.UI.Wrappers
 
 		protected bool GetIsChanged(string propertyName) => _originalValues.ContainsKey(propertyName);
 
-		protected static void RegisterCollection<TWrapper, TM>(
-													ObservableCollection<TWrapper> wrapperCollection,
+		protected void RegisterCollection<TWrapper, TM>(
+													ChangeTrackingCollection<TWrapper> wrapperCollection,
 													List<TM> modelCollection)
 			where TWrapper : ModelWrapper<TM>
 		{
@@ -102,9 +101,16 @@ namespace FriendStorage.UI.Wrappers
 				else if (e.Action == NotifyCollectionChangedAction.Reset)
 					modelCollection.Clear();
 			};
+			RegisterTrackingObject(wrapperCollection);
 		}
 
 		protected void RegisterComplex<TM>(ModelWrapper<TM> complexProperty)
+		{
+			RegisterTrackingObject(complexProperty);
+		}
+
+		private void RegisterTrackingObject<TTrackingObject>(TTrackingObject complexProperty)
+			where TTrackingObject : IRevertibleChangeTracking, INotifyPropertyChanged
 		{
 			if (!_trackingObjects.Contains(complexProperty))
 			{

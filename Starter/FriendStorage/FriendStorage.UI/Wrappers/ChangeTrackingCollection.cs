@@ -50,9 +50,9 @@ namespace FriendStorage.UI.Wrappers
 
 		public void RejectChanges()
 		{
-			foreach (var addedItem in _addedItems)
+			for (var i = 0; i < _addedItems.Count; i++)
 			{
-				Remove(addedItem);
+				Remove(_addedItems[i]);
 			}
 			foreach (var removedItem in _removedItems)
 			{
