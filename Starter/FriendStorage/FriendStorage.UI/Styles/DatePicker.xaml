@@ -247,7 +247,7 @@
     </Setter>
   </Style>
 
-  <Style TargetType="{x:Type DatePicker}" BasedOn="{StaticResource {x:Type Control}}">
+    <Style TargetType="DatePicker" BasedOn="{StaticResource ControlBaseStyle}">
     <Setter Property="behaviors:ChangedBehavior.OriginalValueConverter"
             Value="{DynamicResource DatePickerOriginalValueConverter}"/>
     <Setter Property="Foreground" Value="{StaticResource DefaultForegroundBrush}" />
