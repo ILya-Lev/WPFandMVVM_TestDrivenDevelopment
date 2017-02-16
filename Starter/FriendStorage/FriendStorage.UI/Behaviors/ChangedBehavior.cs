@@ -15,6 +15,7 @@ namespace FriendStorage.UI.Behaviors
 		public static DependencyProperty OriginalValueProperty { get; }
 		public static DependencyProperty IsChangedProperty { get; }
 		public static DependencyProperty IsActiveProperty { get; }
+		public static DependencyProperty OriginalValueConverterProperty { get; }
 
 		private static readonly Dictionary<Type, DependencyProperty> _defaultProperties;
 
@@ -30,10 +31,15 @@ namespace FriendStorage.UI.Behaviors
 								propertyType: typeof(bool), ownerType: typeof(ChangedBehavior),
 								defaultMetadata: new PropertyMetadata(false, OnIsActivePropertyChanged));
 
+			OriginalValueConverterProperty = DependencyProperty.RegisterAttached("OriginalValueConverter",
+									typeof(IValueConverter), typeof(ChangedBehavior),
+									new PropertyMetadata(null, OnOriginalValueConverterPropertyChanged));
+
 			_defaultProperties = new Dictionary<Type, DependencyProperty>
 			{
 				[typeof(TextBox)] = TextBox.TextProperty,
 				[typeof(CheckBox)] = ToggleButton.IsCheckedProperty,
+				[typeof(DatePicker)] = DatePicker.SelectedDateProperty,
 			};
 		}
 
@@ -67,6 +73,17 @@ namespace FriendStorage.UI.Behaviors
 			dependencyObject.SetValue(IsActiveProperty, value);
 		}
 
+		public static IValueConverter GetOriginalValueConverter(DependencyObject dependencyObject)
+		{
+			return (IValueConverter) dependencyObject.GetValue(OriginalValueConverterProperty);
+		}
+
+		public static void SetOriginalValueConverter(DependencyObject dependencyObject,
+													IValueConverter value)
+		{
+			dependencyObject.SetValue(OriginalValueConverterProperty, value);
+		}
+
 		private static void OnIsActivePropertyChanged(DependencyObject d,
 														DependencyPropertyChangedEventArgs e)
 		{
@@ -86,7 +103,25 @@ namespace FriendStorage.UI.Behaviors
 
 			var path = binding.Path.Path;
 			BindingOperations.SetBinding(d, IsChangedProperty, new Binding($"{path}IsChanged"));
-			BindingOperations.SetBinding(d, OriginalValueProperty, new Binding($"{path}OriginalValue"));
+			CreateOriginalValueBinding(d, $"{path}OriginalValue");
+		}
+
+		private static void OnOriginalValueConverterPropertyChanged(DependencyObject d,
+													DependencyPropertyChangedEventArgs e)
+		{
+			var originalBinding = BindingOperations.GetBinding(d, OriginalValueProperty);
+			if (originalBinding == null) return;
+
+			CreateOriginalValueBinding(d, originalBinding.Path.Path);
+		}
+
+		private static void CreateOriginalValueBinding(DependencyObject d, string path)
+		{
+			var newBinding = new Binding(path)
+			{
+				Converter = GetOriginalValueConverter(d)
+			};
+			BindingOperations.SetBinding(d, OriginalValueProperty, newBinding);
 		}
 	}
 }
