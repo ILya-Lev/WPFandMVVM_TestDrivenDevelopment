@@ -5,6 +5,7 @@ using FriendStorage.UI.Dialogs;
 using FriendStorage.UI.Events;
 using FriendStorage.UI.Wrappers;
 using Prism.Events;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace FriendStorage.UI.ViewModel
@@ -33,6 +34,7 @@ namespace FriendStorage.UI.ViewModel
 		public ICommand DeleteCommand { get; }
 		public ICommand AddEmailCommand { get; }
 		public ICommand RemoveEmailCommand { get; }
+		public ObservableCollection<LookupItem> FriendGroupLookup { get; }
 
 		public FriendEditViewModel(IFriendDataProvider friendDataProvider,
 									IEventAggregator eventAggregator,
@@ -41,6 +43,15 @@ namespace FriendStorage.UI.ViewModel
 			_friendDataProvider = friendDataProvider;
 			_eventAggregator = eventAggregator;
 			_messageDialogService = messageDialogService;
+
+			var friendGroups = new[]
+			{
+				new LookupItem {Id = 0, DisplayMember = "Family"},
+				new LookupItem {Id = 1, DisplayMember = "School"},
+				new LookupItem {Id = 2, DisplayMember = "University"},
+				new LookupItem {Id = 3, DisplayMember = "Work"},
+			};
+			FriendGroupLookup = new ObservableCollection<LookupItem>(friendGroups);
 
 			SaveCommand = new DelegateCommand(OnSaveExecute, OnCanSaveExecute);
 			ResetCommand = new DelegateCommand(OnResetExecute, OnCanSaveExecute);

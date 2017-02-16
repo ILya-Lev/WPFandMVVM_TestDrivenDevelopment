@@ -68,6 +68,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Behaviors\ChangedBehavior.cs" />
+    <Compile Include="Converters\ComboBoxOriginalValueConverter.cs" />
     <Compile Include="Converters\DatePickerOriginalValueConverter.cs" />
     <Compile Include="DataProvider\FriendDataProvider.cs" />
     <Compile Include="DataProvider\IFriendDataProvider.cs" />
