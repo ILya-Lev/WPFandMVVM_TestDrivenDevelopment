@@ -67,6 +67,7 @@
             <Button Content="Delete" Command="{Binding DeleteCommand}" Margin="5"/>
         </StackPanel>
         <DataGrid x:Name="dataGrid" ItemsSource="{Binding Friend.Emails}" AutoGenerateColumns="False"
+                  behaviors:DataGridChangedBehavior.IsActive="True"
                   Grid.Column="1" Grid.Row="5"
                   Grid.ColumnSpan="3" Grid.RowSpan="4">
             <DataGrid.Columns>
