@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace FriendStorage.UI.Wrappers
@@ -48,18 +49,21 @@ namespace FriendStorage.UI.Wrappers
 			OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsChanged)));
 		}
 
+		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
 		public void RejectChanges()
 		{
 			for (var i = 0; i < _addedItems.Count; i++)
 			{
 				Remove(_addedItems[i]);
 			}
-			foreach (var removedItem in _removedItems)
+			for (var i = 0; i < _removedItems.Count; i++)
 			{
+				var removedItem = _removedItems[i];
 				Add(removedItem);
 			}
-			foreach (var modifiedItem in _modifiedItems)
+			for (var i = 0; i < _modifiedItems.Count; i++)
 			{
+				var modifiedItem = _modifiedItems[i];
 				modifiedItem.RejectChanges();
 			}
 			OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsChanged)));
