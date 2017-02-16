@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 
 namespace FriendStorage.UI.Behaviors
@@ -31,7 +32,8 @@ namespace FriendStorage.UI.Behaviors
 
 			_defaultProperties = new Dictionary<Type, DependencyProperty>
 			{
-				[typeof(TextBox)] = TextBox.TextProperty
+				[typeof(TextBox)] = TextBox.TextProperty,
+				[typeof(CheckBox)] = ToggleButton.IsCheckedProperty,
 			};
 		}
 
@@ -65,29 +67,26 @@ namespace FriendStorage.UI.Behaviors
 			dependencyObject.SetValue(IsActiveProperty, value);
 		}
 
-		private static void OnIsActivePropertyChanged(DependencyObject dependencyObject,
+		private static void OnIsActivePropertyChanged(DependencyObject d,
 														DependencyPropertyChangedEventArgs e)
 		{
-			if(_defaultProperties.ContainsKey(dependencyObject.GetType()))
-			{
-				var defaultProperty = _defaultProperties[dependencyObject.GetType()];
-				if((bool) e.NewValue)
-				{
-					var binding = BindingOperations.GetBinding(dependencyObject, defaultProperty);
-					if(binding == null) return;
+			if (!_defaultProperties.ContainsKey(d.GetType()))
+				return;
 
-					var bindingPath = binding.Path.Path;
-					BindingOperations.SetBinding(dependencyObject, IsChangedProperty,
-						new Binding($"{bindingPath}IsChanged"));
-					BindingOperations.SetBinding(dependencyObject, OriginalValueProperty,
-						new Binding($"{bindingPath}OriginalValue"));
-				}
-				else
-				{
-					BindingOperations.ClearBinding(dependencyObject, IsChangedProperty);
-					BindingOperations.ClearBinding(dependencyObject, OriginalValueProperty);
-				}
+			if (!(bool) e.NewValue)
+			{
+				BindingOperations.ClearBinding(d, IsChangedProperty);
+				BindingOperations.ClearBinding(d, OriginalValueProperty);
+				return;
 			}
+
+			var defaultProperty = _defaultProperties[d.GetType()];
+			var binding = BindingOperations.GetBinding(d, defaultProperty);
+			if (binding == null) return;
+
+			var path = binding.Path.Path;
+			BindingOperations.SetBinding(d, IsChangedProperty, new Binding($"{path}IsChanged"));
+			BindingOperations.SetBinding(d, OriginalValueProperty, new Binding($"{path}OriginalValue"));
 		}
 	}
 }

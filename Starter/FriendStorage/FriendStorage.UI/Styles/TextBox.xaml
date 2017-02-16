@@ -1,19 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:behavior="clr-namespace:FriendStorage.UI.Behaviors">
-  <Style TargetType="TextBox">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--strange - static resource control base style could not be found while x:type control works fine-->
+    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type Control}}">
     <Setter Property="Background" Value="{StaticResource DefaultBackgroundBrush}"/>
     <Setter Property="Foreground" Value="{StaticResource DefaultForegroundBrush}"/>
     <Setter Property="BorderBrush" Value="{StaticResource DefaultBorderBrush}"/>
     <Setter Property="VerticalAlignment" Value="Center"/>
-    <Setter Property="behavior:ChangedBehavior.IsActive" Value="True"/>
-    <Style.Triggers>
-      <Trigger Property="behavior:ChangedBehavior.IsChanged" Value="True">
-        <Setter Property="Background" Value="{StaticResource IsChangedBackgroundBrush}"/>
-                <Setter Property="ToolTip"
-                        Value="{Binding RelativeSource={RelativeSource Self},
-                                        Path=(behavior:ChangedBehavior.OriginalValue)}"/>
-      </Trigger>
-    </Style.Triggers>
-    </Style>
+  </Style>
 </ResourceDictionary>
