@@ -4,6 +4,7 @@ using FriendStorage.UI.Events;
 using Prism.Events;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 
@@ -46,6 +47,20 @@ namespace FriendStorage.UI.ViewModel
 		public void Load()
 		{
 			NavigationViewModel.Load();
+		}
+
+		public void OnClosing(CancelEventArgs cancelEventArgs)
+		{
+			var unsavedFriend = FriendEditViewModels.FirstOrDefault(vm => vm.Friend.IsChanged)
+								?.Friend;
+			if (unsavedFriend != null)
+			{
+				var message = "Do you want to close without saving at least" +
+							  $" '{unsavedFriend.FirstName} {unsavedFriend.LastName}'?\n" +
+							  "All unsaved changes will be lost!";
+				var title = "Closing the application warning";
+				cancelEventArgs.Cancel = !_messageDialogService.Show(message, title);
+			}
 		}
 
 		private void OnCloseFriendTabExecute(object obj)

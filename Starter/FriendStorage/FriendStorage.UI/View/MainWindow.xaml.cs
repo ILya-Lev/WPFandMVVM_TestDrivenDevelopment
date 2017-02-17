@@ -1,4 +1,5 @@
 ﻿using FriendStorage.UI.ViewModel;
+using System.ComponentModel;
 using System.Windows;
 
 namespace FriendStorage.UI.View
@@ -19,6 +20,12 @@ namespace FriendStorage.UI.View
 		private void MainWindow_Loaded(object sender, RoutedEventArgs e)
 		{
 			_viewModel.Load();
+		}
+
+		protected override void OnClosing(CancelEventArgs e)
+		{
+			_viewModel.OnClosing(e);
+			base.OnClosing(e);
 		}
 	}
 }
