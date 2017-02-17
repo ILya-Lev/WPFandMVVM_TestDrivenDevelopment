@@ -4,12 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:behaviors="clr-namespace:FriendStorage.UI.Behaviors"
+             xmlns:controls="clr-namespace:FriendStorage.UI.View"
              mc:Ignorable="d"
              d:DesignHeight="350" d:DesignWidth="700"
-             MinHeight="400"
+             MinHeight="500"
              Background="#333333">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" MinHeight="40"/>
             <RowDefinition Height="Auto" MinHeight="40"/>
             <RowDefinition Height="Auto" MinHeight="40"/>
             <RowDefinition Height="Auto" MinHeight="40"/>
@@ -61,15 +63,9 @@
 
         <Label Content="Emails" Grid.Row="5" />
 
-        <StackPanel Grid.Row="9" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <Button Content="Save" Command="{Binding SaveCommand}" Margin="5"/>
-            <Button Content="Reset" Command="{Binding ResetCommand}" Margin="5"/>
-            <Button Content="Delete" Command="{Binding DeleteCommand}" Margin="5"/>
-        </StackPanel>
         <DataGrid x:Name="dataGrid" ItemsSource="{Binding Friend.Emails}" AutoGenerateColumns="False"
-                  behaviors:DataGridChangedBehavior.IsActive="True"
-                  Grid.Column="1" Grid.Row="5"
-                  Grid.ColumnSpan="3" Grid.RowSpan="4">
+                  Grid.Column="1" Grid.ColumnSpan="3"
+                  Grid.Row="5" Grid.RowSpan="4">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Email}" Header="Email" MinWidth="40"/>
                 <DataGridTextColumn Binding="{Binding Comment}" Header="Comment" MinWidth="40"/>
@@ -81,5 +77,14 @@
         <Button Command="{Binding RemoveEmailCommand}"
                 Style="{StaticResource RemoveButtonStyle}"
                 Grid.Row="7"  HorizontalAlignment="Right" />
+
+        <controls:ChangeTrackingCollectionInfo Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3"
+                                               DataContext="{Binding Friend.Emails}"/>
+
+        <StackPanel Grid.Row="10" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <Button Content="Save" Command="{Binding SaveCommand}" Margin="5"/>
+            <Button Content="Reset" Command="{Binding ResetCommand}" Margin="5"/>
+            <Button Content="Delete" Command="{Binding DeleteCommand}" Margin="5"/>
+        </StackPanel>
     </Grid>
 </UserControl>

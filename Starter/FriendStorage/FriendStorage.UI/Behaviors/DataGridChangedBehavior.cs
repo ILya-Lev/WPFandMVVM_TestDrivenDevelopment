@@ -21,7 +21,7 @@ namespace FriendStorage.UI.Behaviors
 			return (bool) obj.GetValue(IsActiveProperty);
 		}
 
-		public static void SetValue(DependencyObject obj, bool value)
+		public static void SetIsActive(DependencyObject obj, bool value)
 		{
 			obj.SetValue(IsActiveProperty, value);
 		}

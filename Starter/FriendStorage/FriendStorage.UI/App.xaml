@@ -14,6 +14,7 @@
         <ResourceDictionary Source="Styles/CheckBox.xaml"/>
         <ResourceDictionary Source="Styles/ComboBox.xaml"/>
         <ResourceDictionary Source="Styles/ControlBaseStyle.xaml"/>
+        <ResourceDictionary Source="Styles/DataGrid.xaml"/>
         <ResourceDictionary Source="Styles/DatePicker.xaml"/>
         <ResourceDictionary Source="Styles/Label.xaml"/>
         <ResourceDictionary Source="Styles/TextBox.xaml"/>
