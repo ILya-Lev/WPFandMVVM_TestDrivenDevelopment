@@ -75,6 +75,7 @@
     <Compile Include="DataProvider\IFriendDataProvider.cs" />
     <Compile Include="DataProvider\INavigationDataProvider.cs" />
     <Compile Include="DataProvider\NavigationDataProvider.cs" />
+    <Compile Include="Wrappers\NotifyDataErrorInfoBase.cs" />
     <Compile Include="Dialogs\IMessageDialogService.cs" />
     <Compile Include="Dialogs\MessageDialogService.cs" />
     <Compile Include="Dialogs\YesNoDialog.xaml.cs">
