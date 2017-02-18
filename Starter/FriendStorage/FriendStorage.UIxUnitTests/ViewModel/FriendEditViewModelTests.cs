@@ -33,7 +33,7 @@ namespace FriendStorage.UIxUnitTests.ViewModel
 
 			_friendDataProvider = new Mock<IFriendDataProvider>();
 			_friendDataProvider.Setup(dp => dp.GetFriendById(_friendId))
-				.Returns(new Friend { Id = _friendId, FirstName = "Julia", Address = new Address() });
+				.Returns(new Friend { Id = _friendId, FirstName = "Julia", Address = new Address {City = "New York"} });
 			_friendDataProvider.Setup(dp => dp.DeleteFriend(_friendId));
 
 			_messageDialogService = new Mock<IMessageDialogService>();

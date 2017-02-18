@@ -7,8 +7,8 @@ using System.Linq;
 
 namespace FriendStorage.UI.Wrappers
 {
-	public class ChangeTrackingCollection<T> : ObservableCollection<T>, IRevertibleChangeTracking
-		where T : IRevertibleChangeTracking, INotifyPropertyChanged
+	public class ChangeTrackingCollection<T> : ObservableCollection<T>, IValidatableTrackingObject
+		where T : IValidatableTrackingObject
 	{
 		private IList<T> _originalItems;
 
@@ -32,6 +32,7 @@ namespace FriendStorage.UI.Wrappers
 
 		//public bool IsChanged => _originalItems.Any(t => t.IsChanged);
 		public bool IsChanged => AddedItems.Any() || ModifiedItems.Any() || RemovedItems.Any();
+		public bool IsValid => true;
 
 		public void AcceptChanges()
 		{
