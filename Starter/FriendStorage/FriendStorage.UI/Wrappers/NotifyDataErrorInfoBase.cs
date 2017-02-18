@@ -27,5 +27,14 @@ namespace FriendStorage.UI.Wrappers
 		{
 			ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
 		}
+
+		protected void ClearErrors()
+		{
+			foreach(var propertyName in _propertyErrors.Keys.ToList())
+			{
+				_propertyErrors.Remove(propertyName);
+				OnErrorsChanged(propertyName);
+			}
+		}
 	}
 }

@@ -54,7 +54,7 @@ namespace FriendStorage.UI.ViewModel
 			FriendGroupLookup = new ObservableCollection<LookupItem>(friendGroups);
 
 			SaveCommand = new DelegateCommand(OnSaveExecute, OnCanSaveExecute);
-			ResetCommand = new DelegateCommand(OnResetExecute, OnCanSaveExecute);
+			ResetCommand = new DelegateCommand(OnResetExecute, OnCanResetExecute);
 			DeleteCommand = new DelegateCommand(OnDeleteExecute, OnCanDeleteExecute);
 
 			AddEmailCommand = new DelegateCommand(OnAddEmailExecute);
@@ -69,7 +69,12 @@ namespace FriendStorage.UI.ViewModel
 			Friend = new FriendWrapper(friend);
 
 
-			Friend.PropertyChanged += (sender, args) => RaiseCanExecuteChanged();
+			Friend.PropertyChanged += (sender, args) =>
+			{
+				if(args.PropertyName == nameof(Friend.IsChanged)
+					|| args.PropertyName == nameof(Friend.IsValid))
+					RaiseCanExecuteChanged();
+			};
 
 			RaiseCanExecuteChanged();
 		}
@@ -84,7 +89,7 @@ namespace FriendStorage.UI.ViewModel
 
 		private bool OnCanSaveExecute(object arg)
 		{
-			return Friend?.IsChanged ?? false;
+			return Friend != null && Friend.IsChanged && Friend.IsValid;
 		}
 
 		private void OnSaveExecute(object obj)
@@ -94,6 +99,11 @@ namespace FriendStorage.UI.ViewModel
 			_eventAggregator.GetEvent<FriendSavedEvent>().Publish(Friend.Model);
 
 			(DeleteCommand as DelegateCommand).RaiseCanExecuteChanged();
+		}
+
+		private bool OnCanResetExecute(object arg)
+		{
+			return Friend != null && Friend.IsChanged;
 		}
 
 		private void OnResetExecute(object obj)
@@ -112,7 +122,7 @@ namespace FriendStorage.UI.ViewModel
 							 $" '{Friend.FirstName} {Friend.LastName}'?";
 			const string title = "Delete a friend";
 
-			if (!_messageDialogService.Show(message, title)) return;
+			if(!_messageDialogService.Show(message, title)) return;
 
 			_friendDataProvider.DeleteFriend(Friend.Id);
 			_eventAggregator.GetEvent<FriendDeletedEvent>().Publish(Friend.Id);

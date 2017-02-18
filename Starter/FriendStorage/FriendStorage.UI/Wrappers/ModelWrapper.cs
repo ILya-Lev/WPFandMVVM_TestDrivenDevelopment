@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -17,9 +18,11 @@ namespace FriendStorage.UI.Wrappers
 		{
 			if(model == null) throw new ArgumentNullException(nameof(model));
 			Model = model;
+			Validate();
 		}
 
 		public bool IsChanged => _originalValues.Any() || _trackingObjects.Any(t => t.IsChanged);
+		public bool IsValid => !HasErrors;
 
 		public void RejectChanges()
 		{
@@ -29,7 +32,9 @@ namespace FriendStorage.UI.Wrappers
 			}
 			_trackingObjects.ForEach(t => t.RejectChanges());
 
-			AcceptChanges();
+			_originalValues.Clear();
+			Validate();
+			OnPropertyChanged("");
 		}
 
 		public void AcceptChanges()
@@ -49,9 +54,30 @@ namespace FriendStorage.UI.Wrappers
 			{
 				UpdateOriginalValue(oldValue, value, propertyName);
 				propertyInfo.SetValue(Model, value);
+				Validate();
 				OnPropertyChanged(propertyName);
 				OnPropertyChanged(propertyName + "IsChanged");
 			}
+		}
+
+		private void Validate()
+		{
+			ClearErrors();
+			var results = new List<ValidationResult>();
+			var context = new ValidationContext(this);
+			Validator.TryValidateObject(this, context, results, true);
+
+			if(results.Any()) //will it always match try validate property
+			{
+				var propertyNames = results.SelectMany(r => r.MemberNames).Distinct().ToList();
+				foreach(var propertyName in propertyNames)
+				{
+					_propertyErrors[propertyName] = results.Where(r => r.MemberNames.Contains(propertyName))
+															.Select(r => r.ErrorMessage).Distinct().ToList();
+					OnErrorsChanged(propertyName);
+				}
+			}
+			OnPropertyChanged(nameof(IsValid));
 		}
 
 		private void UpdateOriginalValue<TValue>(TValue oldValue, TValue value, string propertyName)
