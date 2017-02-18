@@ -69,8 +69,8 @@ namespace FriendStorage.UI.ViewModel
 			if (friendEditVm.Friend.IsChanged)
 			{
 				string message = "Do you want to close the tab for " +
-								$"'{friendEditVm.Friend.FirstName} {friendEditVm.Friend.LastName}'?\n" +
-								 "All unsaved changes will be lost";
+						$"'{friendEditVm.Friend.FirstName} {friendEditVm.Friend.LastName}'?\n" +
+						"All unsaved changes will be lost";
 				const string title = "Close the tab!";
 
 				if (!_messageDialogService.Show(message, title))

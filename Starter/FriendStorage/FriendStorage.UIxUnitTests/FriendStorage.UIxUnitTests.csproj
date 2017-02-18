@@ -91,6 +91,7 @@
     <Compile Include="Wrappers\ChangeTrackingComplexPropertiesTests.cs" />
     <Compile Include="Wrappers\ChangeTrackingSimplePropertiesTests.cs" />
     <Compile Include="Wrappers\FriendWrapperTests.cs" />
+    <Compile Include="Wrappers\ValidationSimplePropertyTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
