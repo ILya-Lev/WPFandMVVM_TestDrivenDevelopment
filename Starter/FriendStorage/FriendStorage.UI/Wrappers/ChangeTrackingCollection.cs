@@ -32,7 +32,7 @@ namespace FriendStorage.UI.Wrappers
 
 		//public bool IsChanged => _originalItems.Any(t => t.IsChanged);
 		public bool IsChanged => AddedItems.Any() || ModifiedItems.Any() || RemovedItems.Any();
-		public bool IsValid => true;
+		public bool IsValid => this.All(t => t.IsValid);
 
 		public void AcceptChanges()
 		{
