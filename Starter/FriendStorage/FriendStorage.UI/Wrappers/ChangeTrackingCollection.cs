@@ -41,7 +41,7 @@ namespace FriendStorage.UI.Wrappers
 			_removedItems.Clear();
 
 			//_originalItems.ForEach(t => t.AcceptChanges());
-			foreach (var item in this)
+			foreach(var item in this)
 			{
 				item.AcceptChanges();
 			}
@@ -53,15 +53,15 @@ namespace FriendStorage.UI.Wrappers
 		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
 		public void RejectChanges()
 		{
-			while (_addedItems.Count > 0)
+			while(_addedItems.Count > 0)
 			{
 				Remove(_addedItems[0]);
 			}
-			while (_removedItems.Count > 0)
+			while(_removedItems.Count > 0)
 			{
 				Add(_removedItems[0]);
 			}
-			foreach (var modifiedItem in _modifiedItems.ToList())
+			foreach(var modifiedItem in _modifiedItems.ToList())
 			{
 				modifiedItem.RejectChanges();
 			}
@@ -84,12 +84,13 @@ namespace FriendStorage.UI.Wrappers
 
 			base.OnCollectionChanged(e);
 			OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsChanged)));
+			OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsValid)));
 		}
 
 		private void UpdateObservableCollection(ObservableCollection<T> collection, List<T> list)
 		{
 			collection.Clear();
-			foreach (var item in list)
+			foreach(var item in list)
 			{
 				collection.Add(item);
 			}
@@ -97,7 +98,7 @@ namespace FriendStorage.UI.Wrappers
 
 		private void AttachItemPropertyChangedHandler(IList<T> originalItems)
 		{
-			foreach (var originalItem in originalItems)
+			foreach(var originalItem in originalItems)
 			{
 				originalItem.PropertyChanged += ItemPropertyChanged;
 			}
@@ -105,7 +106,7 @@ namespace FriendStorage.UI.Wrappers
 
 		private void DetachItemPropertyChangedHandler(IList<T> originalItems)
 		{
-			foreach (var originalItem in originalItems)
+			foreach(var originalItem in originalItems)
 			{
 				originalItem.PropertyChanged -= ItemPropertyChanged;
 			}
@@ -113,15 +114,21 @@ namespace FriendStorage.UI.Wrappers
 
 		private void ItemPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			var item = (T) sender;
-			if (_addedItems.Contains(item)) return;
-			if (item.IsChanged)
+			if(e.PropertyName == nameof(IsValid))
 			{
-				if (!_modifiedItems.Contains(item)) _modifiedItems.Add(item);
+				OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsValid)));
+				return;
+			}
+
+			var item = (T) sender;
+			if(_addedItems.Contains(item)) return;
+			if(item.IsChanged)
+			{
+				if(!_modifiedItems.Contains(item)) _modifiedItems.Add(item);
 			}
 			else
 			{
-				if (_modifiedItems.Contains(item)) _modifiedItems.Remove(item);
+				if(_modifiedItems.Contains(item)) _modifiedItems.Remove(item);
 			}
 			OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsChanged)));
 		}

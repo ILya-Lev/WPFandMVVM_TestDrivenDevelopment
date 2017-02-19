@@ -1,5 +1,6 @@
 ﻿using FriendStorage.Model;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -9,14 +10,22 @@ namespace FriendStorage.UI.Wrappers
 	{
 		public FriendWrapper(Friend friend) : base(friend)
 		{
-			Address = new AddressWrapper(friend.Address);
-			RegisterComplex(Address);
 
+		}
+
+		protected override void InitializeCollectionProperty(Friend friend)
+		{
 			Emails = new ChangeTrackingCollection<FriendEmailWrapper>
 			(
 				friend.Emails.Select(e => new FriendEmailWrapper(e))
 			);
 			RegisterCollection(Emails, Model.Emails);
+		}
+
+		protected override void InitializeComplexProperty(Friend friend)
+		{
+			Address = new AddressWrapper(friend.Address);
+			RegisterComplex(Address);
 		}
 
 		public int Id { get { return Model.Id; } set { SetValue(value); } }
@@ -27,7 +36,6 @@ namespace FriendStorage.UI.Wrappers
 		public int FriendGroupIdOriginalValue => GetOriginalValue<int>(nameof(FriendGroupId));
 		public bool FriendGroupIdIsChanged => GetIsChanged(nameof(FriendGroupId));
 
-		[Required(ErrorMessage = "Firstname is required")]
 		public string FirstName { get { return Model.FirstName; } set { SetValue(value); } }
 		public string FirstNameOriginalValue => GetOriginalValue<string>(nameof(FirstName));
 		public bool FirstNameIsChanged => GetIsChanged(nameof(FirstName));
@@ -44,8 +52,21 @@ namespace FriendStorage.UI.Wrappers
 		public bool IsDeveloperOriginalValue => GetOriginalValue<bool>(nameof(IsDeveloper));
 		public bool IsDeveloperIsChanged => GetIsChanged(nameof(IsDeveloper));
 
-		public AddressWrapper Address { get; }
+		public AddressWrapper Address { get; private set; }
 
-		public ChangeTrackingCollection<FriendEmailWrapper> Emails { get; }
+		public ChangeTrackingCollection<FriendEmailWrapper> Emails { get; private set; }
+
+		public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+		{
+			if(string.IsNullOrWhiteSpace(FirstName))
+			{
+				yield return new ValidationResult("Firstname is required", new[] { nameof(FirstName) });
+			}
+			if(IsDeveloper && Emails.Count == 0)
+			{
+				yield return new ValidationResult("Developer should have at least one email",
+					new[] { nameof(IsDeveloper), nameof(Emails) });
+			}
+		}
 	}
 }
