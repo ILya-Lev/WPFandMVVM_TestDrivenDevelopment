@@ -28,7 +28,7 @@
             <ColumnDefinition MinWidth="150" Width="283*"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition MinWidth="150" Width="220*"/>
-            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="30"/>
         </Grid.ColumnDefinitions>
 
         <Label Content="Firstname"/>
