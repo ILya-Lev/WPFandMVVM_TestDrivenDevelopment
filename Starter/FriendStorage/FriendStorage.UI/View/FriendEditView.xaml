@@ -41,8 +41,10 @@
         <DatePicker SelectedDate="{Binding Friend.Birthday, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1"/>
 
         <Label Content="Is Developer" Grid.Row="3" />
-        <CheckBox IsChecked="{Binding Friend.IsDeveloper,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                     Grid.Row="3"  Grid.Column="1" Grid.RowSpan="2"/>
+        <CheckBox IsChecked="{Binding Friend.IsDeveloper, Mode=TwoWay,
+                                        UpdateSourceTrigger=PropertyChanged}"
+                  HorizontalAlignment="Left"
+                  Grid.Row="3"  Grid.Column="1" Grid.RowSpan="2"/>
 
         <Label Content="City" Grid.Column="2" />
         <TextBox Text="{Binding Friend.Address.City, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" />
