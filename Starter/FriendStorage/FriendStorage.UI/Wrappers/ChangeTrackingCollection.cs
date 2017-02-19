@@ -53,18 +53,16 @@ namespace FriendStorage.UI.Wrappers
 		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
 		public void RejectChanges()
 		{
-			for (var i = 0; i < _addedItems.Count; i++)
+			while (_addedItems.Count > 0)
 			{
-				Remove(_addedItems[i]);
+				Remove(_addedItems[0]);
 			}
-			for (var i = 0; i < _removedItems.Count; i++)
+			while (_removedItems.Count > 0)
 			{
-				var removedItem = _removedItems[i];
-				Add(removedItem);
+				Add(_removedItems[0]);
 			}
-			for (var i = 0; i < _modifiedItems.Count; i++)
+			foreach (var modifiedItem in _modifiedItems.ToList())
 			{
-				var modifiedItem = _modifiedItems[i];
 				modifiedItem.RejectChanges();
 			}
 			OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsChanged)));
