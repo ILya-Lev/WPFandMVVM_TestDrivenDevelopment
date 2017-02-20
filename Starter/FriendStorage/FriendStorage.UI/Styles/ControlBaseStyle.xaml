@@ -26,6 +26,9 @@
                 Value="{Binding RelativeSource={RelativeSource Self},
                                 Path=(behavior:ChangedBehavior.OriginalValue)}"/>
             </Trigger>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="Background" Value="{StaticResource HasErrorBackgroundBrush}"/>
+            </Trigger>
         </Style.Triggers>
     </Style>
 </ResourceDictionary>

@@ -81,7 +81,7 @@
                 Grid.Row="7"  HorizontalAlignment="Right" />
 
         <controls:ChangeTrackingCollectionInfo Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3"
-                                               DataContext="{Binding Friend.Emails}"/>
+                DataContext="{Binding Friend.Emails, ValidatesOnNotifyDataErrors=False}"/>
 
         <StackPanel Grid.Row="10" Grid.ColumnSpan="2" Orientation="Horizontal">
             <Button Content="Save" Command="{Binding SaveCommand}" Margin="5"/>
