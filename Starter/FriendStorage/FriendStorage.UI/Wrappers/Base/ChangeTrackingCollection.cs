@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace FriendStorage.UI.Wrappers
+namespace FriendStorage.UI.Wrappers.Base
 {
 	public class ChangeTrackingCollection<T> : ObservableCollection<T>, IValidatableTrackingObject
 		where T : IValidatableTrackingObject

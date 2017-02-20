@@ -76,8 +76,8 @@
     <Compile Include="DataProvider\IFriendDataProvider.cs" />
     <Compile Include="DataProvider\INavigationDataProvider.cs" />
     <Compile Include="DataProvider\NavigationDataProvider.cs" />
-    <Compile Include="Wrappers\IValidatableTrackingObject.cs" />
-    <Compile Include="Wrappers\NotifyDataErrorInfoBase.cs" />
+    <Compile Include="Wrappers\Base\IValidatableTrackingObject.cs" />
+    <Compile Include="Wrappers\Base\NotifyDataErrorInfoBase.cs" />
     <Compile Include="Dialogs\IMessageDialogService.cs" />
     <Compile Include="Dialogs\MessageDialogService.cs" />
     <Compile Include="Dialogs\YesNoDialog.xaml.cs">
@@ -109,11 +109,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Command\DelegateCommand.cs" />
-    <Compile Include="Wrappers\AddressWrapper.cs" />
-    <Compile Include="Wrappers\ChangeTrackingCollection.cs" />
-    <Compile Include="Wrappers\FriendEmailWrapper.cs" />
-    <Compile Include="Wrappers\FriendWrapper.cs" />
-    <Compile Include="Wrappers\ModelWrapper.cs" />
+    <Compile Include="Wrappers\Base\ChangeTrackingCollection.cs" />
+    <Compile Include="Wrappers\Base\ModelWrapper.cs" />
+    <Compile Include="Wrappers\Generated\GenerateModelWrappers.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GenerateModelWrappers.tt</DependentUpon>
+    </Compile>
     <Page Include="Dialogs\YesNoDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -215,6 +217,15 @@
       <Project>{67eb7c6d-721a-4c84-991d-594bd263a0ed}</Project>
       <Name>FriendStorage.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Wrappers\Generated\GenerateModelWrappers.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GenerateModelWrappers.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

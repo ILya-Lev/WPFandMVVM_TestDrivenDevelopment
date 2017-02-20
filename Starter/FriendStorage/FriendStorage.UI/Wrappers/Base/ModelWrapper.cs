@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace FriendStorage.UI.Wrappers
+namespace FriendStorage.UI.Wrappers.Base
 {
 	public class ModelWrapper<TModel> : NotifyDataErrorInfoBase, IValidatableTrackingObject, IValidatableObject
 	{

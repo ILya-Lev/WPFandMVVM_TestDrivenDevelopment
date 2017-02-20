@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using FriendStorage.UI.Wrappers.Base;
 
 namespace FriendStorage.UI.Wrappers
 {

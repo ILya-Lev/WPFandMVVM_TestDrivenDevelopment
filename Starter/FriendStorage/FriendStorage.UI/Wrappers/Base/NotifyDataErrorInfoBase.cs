@@ -1,12 +1,12 @@
-﻿using FriendStorage.UI.ViewModel;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using FriendStorage.UI.ViewModel;
 
-namespace FriendStorage.UI.Wrappers
+namespace FriendStorage.UI.Wrappers.Base
 {
 	public abstract class NotifyDataErrorInfoBase : ViewModelBase, INotifyDataErrorInfo
 	{

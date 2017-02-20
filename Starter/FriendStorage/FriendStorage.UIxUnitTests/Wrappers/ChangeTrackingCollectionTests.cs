@@ -3,6 +3,7 @@ using FriendStorage.Model;
 using FriendStorage.UI.Wrappers;
 using System.Collections.Generic;
 using System.Linq;
+using FriendStorage.UI.Wrappers.Base;
 using Xunit;
 
 namespace FriendStorage.UIxUnitTests.Wrappers
