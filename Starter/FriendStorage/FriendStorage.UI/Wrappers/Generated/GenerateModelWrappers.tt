@@ -31,25 +31,25 @@ using FriendStorage.UI.Wrappers.Base;
 
 namespace FriendStorage.UI.Wrappers
 {
-	public class <#=modelType.Name#>Wrapper : ModelWrapper<<#=modelType.Name#>>
+	public partial class <#=modelType.Name#>Wrapper : ModelWrapper<<#=modelType.Name#>>
 	{
 		public <#=modelType.Name#>Wrapper(<#=modelType.Name#> model) : base(model)
 		{
 		}
 
-		<#
-		GenerateSimpleProperties(simpleProperties);
-		GenerateComplexProperties(complexProperties);
-		GenerateCollectionProperties(collectionProperties);
+<#
+	GenerateSimpleProperties(simpleProperties);
+	GenerateComplexProperties(complexProperties);
+	GenerateCollectionProperties(collectionProperties);
 
-	    GenerateInitializeComplexProperties(modelType.Name, complexProperties);
-	    GenerateInitializeCollectionProperties(modelType.Name, collectionProperties);
-		#>
+	GenerateInitializeComplexProperties(modelType.Name, complexProperties);
+	GenerateInitializeCollectionProperties(modelType.Name, collectionProperties);
+#>
 
 	}
 }
 <#
-   SaveGeneratedCodeAsFile(modelType.Name + "Wrapepr.g.cs");
+   SaveGeneratedCodeAsFile(modelType.Name + "Wrapper.g.cs");
    }
 #>
 <#+
@@ -72,7 +72,6 @@ namespace FriendStorage.UI.Wrappers
 		{
 			var propertyType = GetPropertyTypeName(simpleProperty);
 	#>
-
 		public <#=propertyType#> <#=simpleProperty.Name#> { get { return Model.<#=simpleProperty.Name#>; } set { SetValue(value); } }
 		public <#=propertyType#> <#=simpleProperty.Name#>OriginalValue => GetOriginalValue<<#=propertyType#>>(nameof(<#=simpleProperty.Name#>));
 		public bool <#=simpleProperty.Name#>IsChanged => GetIsChanged(nameof(<#=simpleProperty.Name#>));

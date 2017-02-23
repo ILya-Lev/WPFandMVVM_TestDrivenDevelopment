@@ -115,15 +115,19 @@
     <Compile Include="Command\DelegateCommand.cs" />
     <Compile Include="Wrappers\Base\ChangeTrackingCollection.cs" />
     <Compile Include="Wrappers\Base\ModelWrapper.cs" />
-    <Compile Include="Wrappers\Generated\AddressWrapepr.g.cs" />
-    <Compile Include="Wrappers\Generated\FriendEmailWrapepr.g.cs" />
-    <Compile Include="Wrappers\Generated\FriendGroupWrapepr.g.cs" />
-    <Compile Include="Wrappers\Generated\FriendWrapepr.g.cs" />
+    <Compile Include="Wrappers\Custom\AddressWrapper.cs" />
+    <Compile Include="Wrappers\Custom\FriendEmailWrapper.cs" />
+    <Compile Include="Wrappers\Custom\FriendWrapper.cs" />
+    <Compile Include="Wrappers\Generated\AddressWrapper.g.cs" />
+    <Compile Include="Wrappers\Generated\FriendEmailWrapper.g.cs" />
+    <Compile Include="Wrappers\Generated\FriendGroupWrapper.g.cs" />
+    <Compile Include="Wrappers\Generated\FriendWrapper.g.cs" />
     <Compile Include="Wrappers\Generated\GenerateModelWrappers.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>GenerateModelWrappers.tt</DependentUpon>
     </Compile>
+    <Compile Include="Wrappers\Generated\LookupItemWrapper.g.cs" />
     <Page Include="Dialogs\YesNoDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -233,6 +237,7 @@
     <Content Include="Wrappers\Generated\GenerateModelWrappers.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>GenerateModelWrappers.cs</LastGenOutput>
+      <TransformOnBuild>True</TransformOnBuild>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
