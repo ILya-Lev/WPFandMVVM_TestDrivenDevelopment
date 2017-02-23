@@ -179,7 +179,7 @@ namespace FriendStorage.UIxUnitTests.Wrappers
 
 			var wrapper = new FriendWrapper(_expectedFriend);
 
-			CheckIfEmailsAreSynchromized(wrapper);
+			CheckIfEmailsAreSynchronized(wrapper);
 		}
 
 		[Fact]
@@ -195,7 +195,7 @@ namespace FriendStorage.UIxUnitTests.Wrappers
 			wrapper.Emails.Add(new FriendEmailWrapper(additionaEmails[0]));
 			wrapper.Emails.Add(new FriendEmailWrapper(additionaEmails[1]));
 
-			CheckIfEmailsAreSynchromized(wrapper);
+			CheckIfEmailsAreSynchronized(wrapper);
 		}
 		[Fact]
 		public void Remove_Email_ShouldUpdateModel()
@@ -205,7 +205,7 @@ namespace FriendStorage.UIxUnitTests.Wrappers
 
 			wrapper.Emails.RemoveAt(0);
 
-			CheckIfEmailsAreSynchromized(wrapper);
+			CheckIfEmailsAreSynchronized(wrapper);
 		}
 		[Fact]
 		public void Clear_Email_ShouldUpdateModel()
@@ -215,10 +215,10 @@ namespace FriendStorage.UIxUnitTests.Wrappers
 
 			wrapper.Emails.Clear();
 
-			CheckIfEmailsAreSynchromized(wrapper);
+			CheckIfEmailsAreSynchronized(wrapper);
 		}
 
-		private void CheckIfEmailsAreSynchromized(FriendWrapper wrapper)
+		private void CheckIfEmailsAreSynchronized(FriendWrapper wrapper)
 		{
 			wrapper.Emails.Count.Should().Be(_expectedFriend.Emails.Count);
 			wrapper.Emails.All(e => _expectedFriend.Emails.Any(fe => fe == e.Model))

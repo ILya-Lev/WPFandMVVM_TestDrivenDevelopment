@@ -39,6 +39,10 @@
       <HintPath>..\packages\Autofac.4.3.0\lib\net45\Autofac.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.TextTemplating.Interfaces.14.0, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.TextTemplating.Interfaces.14.0.14.3.25407\lib\net45\Microsoft.VisualStudio.TextTemplating.Interfaces.14.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MoreLinq, Version=2.0.20029.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
       <HintPath>..\packages\morelinq.2.1.0\lib\net35\MoreLinq.dll</HintPath>
       <Private>True</Private>
@@ -111,6 +115,10 @@
     <Compile Include="Command\DelegateCommand.cs" />
     <Compile Include="Wrappers\Base\ChangeTrackingCollection.cs" />
     <Compile Include="Wrappers\Base\ModelWrapper.cs" />
+    <Compile Include="Wrappers\Generated\AddressWrapepr.g.cs" />
+    <Compile Include="Wrappers\Generated\FriendEmailWrapepr.g.cs" />
+    <Compile Include="Wrappers\Generated\FriendGroupWrapepr.g.cs" />
+    <Compile Include="Wrappers\Generated\FriendWrapepr.g.cs" />
     <Compile Include="Wrappers\Generated\GenerateModelWrappers.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -219,13 +227,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Wrappers\Generated\GenerateModelWrappers.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>GenerateModelWrappers.cs</LastGenOutput>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

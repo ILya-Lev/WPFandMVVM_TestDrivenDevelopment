@@ -1,18 +1,167 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
-<#@ assembly name="FriednStorage.Model" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Collections.Generic" #>
+﻿<#@ template debug="true" hostSpecific="true" #>
 <#@ output extension=".cs" #>
-public class FriendWrapper
-{
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ Assembly Name="$(SolutionDir)\FriendStorage.Model\bin\Debug\FriendStorage.Model.dll" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="FriendStorage.Model" #>
 <#
-for(int i=0;i<10;i++)
+   foreach (var modelType in GetModelTypes())
+   {
+	var simpleProperties = modelType.GetProperties()
+		   .Where(pi => pi.PropertyType.IsValueType || pi.PropertyType == typeof(string)).ToList();
+	var complexProperties = modelType.GetProperties().Except(simpleProperties)
+		   .Where(pi => pi.PropertyType.IsClass
+					 && !typeof(IEnumerable).IsAssignableFrom(pi.PropertyType)).ToList();
+	var collectionProperties = modelType.GetProperties()
+		   .Except(simpleProperties)
+		   .Except(complexProperties)
+		   .Where(pi => pi.PropertyType.IsGenericType).ToList();
+#>
+using System;
+using System.Linq;
+using FriendStorage.Model;
+using FriendStorage.UI.Wrappers.Base;
+
+namespace FriendStorage.UI.Wrappers
 {
-#>
-	public string Number<#=i #> {get; set;}
+	public class <#=modelType.Name#>Wrapper : ModelWrapper<<#=modelType.Name#>>
+	{
+		public <#=modelType.Name#>Wrapper(<#=modelType.Name#> model) : base(model)
+		{
+		}
+
+		<#
+		GenerateSimpleProperties(simpleProperties);
+		GenerateComplexProperties(complexProperties);
+		GenerateCollectionProperties(collectionProperties);
+
+	    GenerateInitializeComplexProperties(modelType.Name, complexProperties);
+	    GenerateInitializeCollectionProperties(modelType.Name, collectionProperties);
+		#>
+
+	}
+}
 <#
-}
+   SaveGeneratedCodeAsFile(modelType.Name + "Wrapepr.g.cs");
+   }
 #>
-}
+<#+
+	private IEnumerable<Type> GetModelTypes()
+	{
+		return typeof(Friend).Assembly.GetTypes();
+	}
+
+	private void SaveGeneratedCodeAsFile(string fileName)
+	{
+		string dir = Path.GetDirectoryName(Host.TemplateFile);
+		string outputFilePath = Path.Combine(dir, fileName);
+		File.WriteAllText(outputFilePath, GenerationEnvironment.ToString());
+		GenerationEnvironment.Clear();
+	}
+
+	private void GenerateSimpleProperties(IEnumerable<PropertyInfo> simpleProperties)
+	{
+		foreach(var simpleProperty in simpleProperties)
+		{
+			var propertyType = GetPropertyTypeName(simpleProperty);
+	#>
+
+		public <#=propertyType#> <#=simpleProperty.Name#> { get { return Model.<#=simpleProperty.Name#>; } set { SetValue(value); } }
+		public <#=propertyType#> <#=simpleProperty.Name#>OriginalValue => GetOriginalValue<<#=propertyType#>>(nameof(<#=simpleProperty.Name#>));
+		public bool <#=simpleProperty.Name#>IsChanged => GetIsChanged(nameof(<#=simpleProperty.Name#>));
+
+<#+		}
+	}
+
+	private string GetPropertyTypeName(PropertyInfo property)
+	{
+		var indexOfTick = property.PropertyType.FullName.IndexOf("`");
+		if (indexOfTick < 0)
+		{
+			return property.PropertyType.FullName;
+		}
+		var argTypes = property.PropertyType.GenericTypeArguments.Select(t => t.FullName);
+		var argStr = string.Join(", ", argTypes);
+		return property.PropertyType.FullName.Substring(0, indexOfTick) + "<" + argStr + ">";
+	}
+
+	private void GenerateComplexProperties(IEnumerable<PropertyInfo> complexProperties)
+	{
+		foreach(var property in complexProperties)
+		{
+#>
+		public <#=property.PropertyType.Name#>Wrapper <#= property.Name #> { get; private set; }
+<#+
+		}
+	}
+
+	private void GenerateCollectionProperties(IEnumerable<PropertyInfo> collectionProperties)
+	{
+		foreach(var property in collectionProperties)
+		{
+		var itemType = property.PropertyType.GenericTypeArguments[0].Name;
+#>
+		public ChangeTrackingCollection<<#= itemType #>Wrapper> <#= property.Name #> { get; private set; }
+<#+
+		}
+	}
+
+	private void GenerateInitializeComplexProperties(string modelTypeName,
+									 IEnumerable<PropertyInfo> properties)
+	{
+		if (!properties.Any()) return ;
+#>
+
+		protected override void InitializeComplexProperty(<#= modelTypeName #> model)
+		{
+<#+
+		foreach(var property in properties)
+		{
+#>
+			if (model.<#= property.Name #> == null)
+				throw new ArgumentNullException(nameof(<#= property.Name #>));
+
+			<#= property.Name #> = new <#= property.PropertyType.Name #>Wrapper(model.<#= property.Name #>);
+			RegisterComplex(<#= property.Name #>);
+<#+
+		}
+#>
+		}
+<#+
+	}
+
+		private void GenerateInitializeCollectionProperties(string modelTypeName,
+											IEnumerable<PropertyInfo> properties)
+	{
+		if (!properties.Any()) return ;
+#>
+
+		protected override void InitializeCollectionProperty(<#= modelTypeName #> model)
+		{
+<#+
+		foreach(var property in properties)
+		{
+			var propType = property.PropertyType.GenericTypeArguments[0].Name;
+#>
+			if (model.<#= property.Name #> == null)
+				throw new ArgumentNullException(nameof(<#= property.Name #>));
+
+			<#= property.Name #> = new ChangeTrackingCollection<<#= propType #>Wrapper>(
+				model.<#= property.Name #>.Select(item => new <#= propType #>Wrapper(item))
+			);
+			RegisterCollection(<#= property.Name #>, model.<#= property.Name #>);
+<#+
+		}
+#>
+		}
+<#+
+	}
+
+#>
